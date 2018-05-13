@@ -2,21 +2,24 @@
 
 **NOTE: VERY WORK IN PROGRESS**
 
-A utility for visdom metering and logging built on top of TNT. 
-The idea is to provide a declarative way to generate meters and loggers with a clean api.
-The meters and loggers are contained in a single object, which is updated by dictionaries of values.
+A utility for visdom metering and logging built on top of TNT, and some utlities for recording model status during training.
+The idea is to provide a declarative way to generate meters and loggers with a clean api. 
+But isn'y pytorch all about nondeclarative style? 
+Well I find the imperative pythonic expirience useful for stuff where I need to expirement, not for the stuff that I know and just need to make go. 
+Anyway, the meters and loggers are contained in a single object, which is updated by dictionaries of values.
 
-# Considerations 
+### Considerations 
 
 If you are not a fan of dictionaries for your data during expirements, this may not be for you.
 I tend to like not redoing my logging creation functions for every expriment, so I decided to consolidate these.
 If you like tnt's MeterLogger, but also like logging random things like histograms of your weights, this may be for you.
 
 
-# Examples
+## Examples
 
+### Logger
 Api for preset configurations (somewhat inspired by Cadene's pretrainedmodels). 
-Adding and logging data uses same api as TNT visdom logger (add, log)
+Adding and logging data uses same api as TNT visdom logger (add, log, reset)
 
     import flexlogger
     
@@ -53,6 +56,26 @@ These are a bit clunky, but I tend to put my definitions in a file somewhere and
                  'test_loss':  {'type': 'AverageValueMeter', 'target': 'loss'} }
                   env='my_env', uid='my_uid')
                                   
+### Model Logging
+
+The TooledModel module registers hooks for recording gradients and model weights during training
+When pytorch 1 comes out, will need to add profiling to it maybe. 
+
+    
+    inputs, targets = Variable(torch.rand(2, 20)), Variable(torch.rand(2, 3))
+    model = nn.Sequential(nn.Linear(20, 10), nn.Linear(10, 3))
+    
+    # Tooling object registers 
+    TM = TooledModel(model)
+    
+    output = model(inputs)
+    loss = F.mse_loss(output, targets)
+    loss.backward()
+
+    TM.table()
+    >>>
+    
+
 
 There are also some utilities that I wrote down one time to remind myself what the plot and meter types are and the shapes of the inputs they take.
 
@@ -73,11 +96,11 @@ There are also some utilities that I wrote down one time to remind myself what t
     flexlogger.preset_info('loss+Acc')
     
 
-# Install 
+## Install 
 
-todo
+todo setup.py
 
-# Todo 
+## Todo 
 
 1) adding plots on the fly:
 
@@ -86,3 +109,12 @@ todo
     Stat.update_defintion()
 
 2) maybe a counter for some plots. When each of the values has been filled, plot those values? 
+
+3) Note to self. tooling for a nn.Module for logging weights and debugging
+
+4) is it worth having modes instead of explicit settings for each logger? 
+Probably not ... Sine config is declarative as it is, it does not need any utility. 
+
+5) Pass in Klass instead of string? 
+
+6) 

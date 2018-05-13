@@ -1,22 +1,10 @@
-import torch
-import time
+import time, pickle
 from inspect import signature
 from torchnet import meter as METERS
 from torchnet.logger import VisdomPlotLogger, VisdomLogger
 from collections import defaultdict
+from .meter_doc import _meter_defs
 
-# 'TimeMeter',
-_meter_defs = \
-    {'MovingAverageValueMeter': [],
-     'AUCMeter': [],
-     'ClassErrorMeter': [],
-     'MSEMeter': {'type': [torch.FloatTensor, torch.FloatTensor],
-                  'doc': 'Two Tensors of same size'},
-     'ConfusionMeter': [],
-     'APMeter': [],
-     'AverageValueMeter': {'type': float, 'doc': 'a single float or int'},
-     'mAPMeter': []
-     }
 
 _meters = list(_meter_defs.keys())
 _plots = ['line', 'scatter']
@@ -46,10 +34,12 @@ class FlexLogger(object):
              'test_loss':  {'type': 'averagevaluemeter',  'target': 'loss' },  })
 
         """
+        # saving a copy of args for now
         self._args = {'meter': meter_args, 'plot': plot_args}
         self._env = kwargs.get('env', None)
         self._guid = kwargs.get('uid', str(time.time()).split('.')[0])
         self._port = kwargs.get('port', 8097)
+        self._epoch = 0
 
         self._meters = {}
         self._plots = {}
@@ -58,6 +48,9 @@ class FlexLogger(object):
         self._meter_to_plot = defaultdict(str)
 
         # initialization
+        self.update_config(plot_args, meter_args)
+
+    def update_config(self, plot_args, meter_args):
         self._init_links(plot_args, meter_args)
         self._init_plots(plot_args)
         self._init_meters(meter_args)
@@ -122,22 +115,6 @@ class FlexLogger(object):
             keys = [keys]
         return keys
 
-    def add_plot(self, name, opts):
-        # assertions
-
-        # add to definitions
-
-        # add_plot
-        self._add_plot(name, opts)
-
-    def add_meter(self, name, opts):
-        # assertions
-
-        # add to definitions
-
-        # add_plot
-        self._add_meter(name, opts)
-
     def add(self, kwargs={}):
         """
 
@@ -153,7 +130,7 @@ class FlexLogger(object):
             else:
                 self._meters.get(k).add(*v)
 
-    def log(self, X, keys=None, reset=True):
+    def log(self, X=None, keys=None, reset=True):
         """
 
         :param keys: X integer - X axis Value
@@ -162,13 +139,13 @@ class FlexLogger(object):
         :return:
         """
         plot_keys = self._prep_key_args(keys, self._plots)
+        X = self._epoch if X is  None else X
         for plot_ky in plot_keys:
             plot = self._plots.get(plot_ky, None)
             if plot is None:
                 print('Key not found ', plot_ky)
                 continue
-            # get the meters
-            YS = []
+            YS = []   # get the meters
             for meter_key in self._plot_to_meter.get(plot_ky, []):
                 meter = self._meters.get(meter_key)
                 val = meter.value()
@@ -178,15 +155,23 @@ class FlexLogger(object):
                     YS.append(val[0])
                 if reset is True:
                     meter.reset()
-            XS = [X] * len(YS)
-            plot.log(XS, YS)
+            if YS:
+                XS = [X] * len(YS)
+                plot.log(XS, YS)
 
-    def save(self, plots=False):
+    def save(self, file_path, plots=False):
         """
         saves this object, and the visdom state if plots is True
+        todo implement lol
         :return:
         """
-        raise NotImplementedError('not yet implemented')
+        # raise NotImplementedError('not yet implemented')
+        pickle.dump(self, file_path)
+
+    @staticmethod
+    def load(file_path):
+        obj = pickle.load(file_path)
+        return obj
 
     def reset(self, keys=None):
         keys = self._prep_key_args(keys, self._meters)
@@ -194,6 +179,19 @@ class FlexLogger(object):
             meter = self._meters.get(k, None)
             if meter is not None:
                 meter.reset()
+
+    def set_epoch(self, epoch=None):
+        if epoch is None:
+            self._epoch += 1
+        else:
+            self._epoch = epoch
+
+    def remove_configs(self, keys):
+        for k in keys:
+            self._meters.pop(k, None)
+            self._plots.pop(k, None)
+            self._plot_to_meter.pop(k, None)
+            self._meter_to_plot.pop(k, None)
 
     def get_plot_names(self):
         return list(self._plot_to_meter.keys())
@@ -206,3 +204,16 @@ class FlexLogger(object):
 
     def get_meters_for_plot(self, plot_key):
         return self._plot_to_meter.get(plot_key, [])
+
+
+class ModalLogger(FlexLogger):
+    def __init__(self, *args, **kwargs):
+        super(ModalLogger, self).__init__(*args, **kwargs)
+
+
+
+
+
+
+
+
