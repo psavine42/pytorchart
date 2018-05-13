@@ -4,6 +4,7 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 from collections import OrderedDict
 from inspect import signature
+from .preconfigured import get_preset_logger
 
 _modes = ['grad_in', 'grad_out', 'weights', 'inputs']
 
@@ -12,6 +13,10 @@ class TooledModel():
     """
 
     TM = TooledModel(model)
+
+    For modules creates a tree:
+    {'module_name' : {'grad_in',
+
 
     """
     def __init__(self, model=None, opts=_modes, keys=None):
@@ -55,13 +60,29 @@ class TooledModel():
     def table(self):
         mxkey = max(map(len, self._grads_out.keys())) + 2
         for k, v in self._grads_out.items():
-            print('{} {:.4f}'.format(k.ljust(mxkey, ' '), v[0].mean()))
+            print('{} {:.4f} {:.4f}'.format(k.ljust(mxkey, ' '), v[0].mean(), v[0].std()))
 
+    def get_info(self):
+        for k, v in self._grads_out.items():
+             v[0].mean(), v[0].std()
 
 
 class ToolingLogger():
-    def __init__(self, opts=_modes):
-        pass
+    """
+
+    Combines a flexlogger and a TooledModel.
+    At each step, sends data from TooledModel to Logger.
+
+    Usage:
+
+    model = nn.Sequential(nn.Linear(20, 10), nn.Linear(10, 3))
+    TM = ToolingLogger(model)
+
+    """
+    def __init__(self, model, opts=_modes, **kwargs):
+        self._cfg = kwargs.get('preset', 'grads')
+        self._Logger = get_preset_logger(self._cfg)
+        self._TM = TooledModel(model, opts=opts)
 
     def step(self):
         pass

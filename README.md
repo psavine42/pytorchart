@@ -73,7 +73,11 @@ When pytorch 1 comes out, will need to add profiling to it maybe.
     loss.backward()
 
     TM.table()
-    >>>
+    >>>             grad_in             grad_in 
+        layer    Mean       Std         
+        g_io_0   -0.0096    0.0928
+        g_io_1   -0.2850    0.1751
+
     
 
 

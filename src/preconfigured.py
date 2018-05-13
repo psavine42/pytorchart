@@ -19,6 +19,13 @@ _plot_defs = \
              'train_mse': {'type': 'MSEMeter', 'target': 'mse'},
              'test_mse': {'type': 'MSEMeter', 'target': 'mse'}
             }
+         },
+     'grads':
+        {'plots':
+            {'grad': {'type': 'line'}},
+         'meters':
+            {'grad': {'type': 'AverageValueMeter', 'target': 'grad'},
+            }
          }
     }
 
