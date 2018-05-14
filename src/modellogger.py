@@ -1,10 +1,10 @@
 import pprint
-from collections import OrderedDict, defaultdict
-from .preconfigured import get_preset_logger, FlexLogger
-from .tooled import TooledModel, _default_hooks, _default_metrics
+from collections import defaultdict
+from .preconfigured import FlexLogger
+from .tooled import TooledModel, _default_metrics
 
 
-class TooledModelLogger():
+class TooledModelLogger(object):
     """
 
     Combines a flexlogger and a TooledModel.
@@ -27,6 +27,8 @@ class TooledModelLogger():
     """
     def __init__(self,
                  model,
+                 plot_args=None,
+                 meter_args=None,
                  metrics=_default_metrics,
                  mode='by_layer',
                  **kwargs):
@@ -34,11 +36,13 @@ class TooledModelLogger():
         self._Logger = None
         self._TM = TooledModel(model, metrics=metrics)
         self._tm_to_logger = defaultdict()
-        self._ctr = 0
+        # self._ctr = 0
         if mode == 'by_layer':
             self.generete_plots_by_layer(self._TM.get_dict())
         elif mode == 'by_metric':
             self.generete_plots_by_metric(self._TM.get_dict())
+        if plot_args is not None and meter_args is not None:
+            self._Logger.update(plot_args, meter_args)
 
     def _name_layer_plot(self, layer_name):
         return 'layer_' + str(layer_name)
@@ -74,17 +78,19 @@ class TooledModelLogger():
                     self._tm_to_logger[meter_name] = [k, metric_type, metric]
         self._Logger = FlexLogger(plots, meters)
 
-    def step(self, log=False):
-        self._ctr += 1
+    def step(self, log=False, keys=None, reset=True):
+        _step = self._Logger.step()
         update_dict = {}
         for meter_name in self._Logger.get_meter_names():
-            path = self._tm_to_logger[meter_name]
-            value = self._TM.get_metrics(path[0], path[1], path[2])
+
+            name, mtype, metric = self._tm_to_logger.get(meter_name, ['', '', ''])
+            value = self._TM.get_metrics(name, mtype, metric)
+
             if value and len(value) >= 1:
                 update_dict[meter_name] = value[0]
         self._Logger.add(update_dict)
-        if log:
-            self.log(X=self._ctr)
+        if log is True:
+            self._Logger.log(X=_step, keys=keys, reset=reset)
 
     def add(self):
         self.step()
@@ -93,8 +99,15 @@ class TooledModelLogger():
         self._Logger.log(**kwargs)
 
     def reset(self):
-        self._TM.reset()
         self._Logger.reset()
+
+    def clear(self):
+        self._TM.clear()
 
     def table(self):
         self._TM.table()
+
+
+class TooledModelLogger2(TooledModel, ):
+    def __init__(self, *args, **kwargs):
+        super(TooledModelLogger2, self).__init__(*args, **kwargs)

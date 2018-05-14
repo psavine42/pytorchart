@@ -36,14 +36,17 @@ class FlexLogger(object):
         """
         # saving a copy of args for now
         self._args = {'meter': meter_args, 'plot': plot_args}
-        self._env = kwargs.get('env', None)
+        self._env  = kwargs.get('env', None)
         self._guid = kwargs.get('uid', str(time.time()).split('.')[0])
         self._port = kwargs.get('port', 8097)
-        self._epoch = 0
+        self._step = kwargs.get('track_step', True)
+        self._ctr  = kwargs.get('step', 0)
 
+        #
         self._meters = {}
-        self._plots = {}
+        self._plots  = {}
 
+        # indexes
         self._plot_to_meter = defaultdict(list)
         self._meter_to_plot = defaultdict(str)
 
@@ -130,7 +133,7 @@ class FlexLogger(object):
             else:
                 self._meters.get(k).add(*v)
 
-    def log(self, X=None, keys=None, reset=True):
+    def log(self, X=None, keys=None, reset=False):
         """
 
         :param keys: X integer - X axis Value
@@ -139,7 +142,7 @@ class FlexLogger(object):
         :return:
         """
         plot_keys = self._prep_key_args(keys, self._plots)
-        X = self._epoch if X is None else X
+        X = self._ctr if X is None or self._step is True else X
         for plot_ky in plot_keys:
             plot = self._plots.get(plot_ky, None)
             if plot is None:
@@ -158,6 +161,8 @@ class FlexLogger(object):
             if YS:
                 XS = [X] * len(YS)
                 plot.log(XS, YS)
+        if self._step is True:
+            self.step()
 
     def save(self, file_path, plots=False):
         """
@@ -180,11 +185,12 @@ class FlexLogger(object):
             if meter is not None:
                 meter.reset()
 
-    def set_epoch(self, epoch=None):
-        if epoch is None:
-            self._epoch += 1
+    def step(self, step=None):
+        if step is None:
+            self._ctr += 1
         else:
-            self._epoch = epoch
+            self._ctr = step
+        return self._ctr
 
     def remove_configs(self, keys):
         for k in keys:

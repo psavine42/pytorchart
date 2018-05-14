@@ -135,11 +135,14 @@ There are also some utilities that I wrote down one time to remind myself what t
     flexlogger.preset_info('loss+Acc')  # show details for a preset config
     
 
-## Install 
-
+### Install 
 todo setup.py
 
-## Todo 
+    pip install visdom
+    pip install --upgrade git+https://github.com/psavine42/flexilogger.git@master
+
+
+### Todo 
 
 1) adding plots on the fly:
 
@@ -156,4 +159,4 @@ Probably not ... Sine config is declarative as it is, it does not need any utili
 
 5) Pass in Klass instead of string? 
 
-6) 
+6) Implement the mutual information paper - 
