@@ -139,7 +139,7 @@ class FlexLogger(object):
         :return:
         """
         plot_keys = self._prep_key_args(keys, self._plots)
-        X = self._epoch if X is  None else X
+        X = self._epoch if X is None else X
         for plot_ky in plot_keys:
             plot = self._plots.get(plot_ky, None)
             if plot is None:

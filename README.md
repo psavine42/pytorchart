@@ -35,15 +35,21 @@ Adding and logging data uses same api as TNT visdom logger (add, log, reset)
     Stat.add({'train_mse': [torch.randn([4, 20]), torch.randn([4, 20])]})
     Stat.add({'test_mse': [torch.randn([4, 20]), torch.randn([4, 20])]})
     
-    # or log several keys at once 
-    Stat.add({'train_loss': 0.7, 'test_loss': 0.7]})
-    
-    # log only keys that you want, and do not reset the meters. 
-    Stat.log(epoch, keys=['train_loss', 'train_mse'], reset=False)
+    Stat.add({'train_loss': 0.7, 'test_loss': 0.7]})    # or log several keys at once 
     
     # or log all the keys with the None option, and reset the meters by default.
     Stat.log(epoch)
+    Stat.reset()       # clear everythin
     
+    
+Run a fake training loop ![alt text](imgs/s2.png?raw=true "Title")    
+
+    Stat = flexlogger.get_preset_logger('loss+MSE')
+    for i in range(5): # do a loop
+        Stat.add({'train_loss': random.random(), 'test_loss': random.random()]})
+        Stat.add({k: [torch.randn(4, 20), torch.randn(4, 20)] for k in ['test_mse', 'train_mse']})
+        Stat.log(i)
+                
 
 Defining custom configured loggers is done with dictionaries, and visdom kwargs. 
 These are a bit clunky, but I tend to put my definitions in a file somewhere and reuse all over the place...
@@ -72,32 +78,61 @@ When pytorch 1 comes out, will need to add profiling to it maybe.
     loss = F.mse_loss(output, targets)
     loss.backward()
 
+    # print a table
     TM.table()
-    >>>             grad_in             grad_in 
-        layer    Mean       Std         
-        g_io_0   -0.0096    0.0928
-        g_io_1   -0.2850    0.1751
+    >>> +----------+------------------+------------------+------------------+------------------+
+        |          |     Grad_in      |     Grad_out     |      Inputs      |     Weights      |
+        | Layers   |   mean     std   |   mean     std   |   mean     std   |   mean     std   |
+        +----------+------------------+------------------+------------------+------------------+
+        | 0        |  0.0287   0.0068 |  0.0287   0.0068 |  0.2769   0.4568 |  0.1318  -0.0042 |
+        | 1        |  0.0519  -0.0658 |  0.0519  -0.0658 |  0.2946  -0.0271 |  0.1878  -0.0139 |
+        +----------+------------------+------------------+------------------+------------------+
+    
+    # or return the dictionary of values for whatever:
+    TM.table()
+
+### Why Not Both? 
+
+The TooledModelLogger class creates a ModelLogger, and then send that to a FlexiLogger. 
+TooledMOdelLogger has same APIs, (log, reset, add) with the addition of step. 
+For now, every time you want to move data, you should call TooledModelLogger.step(). 
+I will play around a bit on how this wants to be configured and initialized, but for now TML
+will create a chart for each layer or for each metric. 
+
+    from src.modellogger import TooledModelLogger
+    
+    model = nn.Sequential(nn.Linear(20, 10), nn.Linear(10, 3))
+    optim = torch.optim.Adam(model.parameters())
+
+    TMLogger = TooledModelLogger(model)
+    for i in range(4):
+        inputs = Variable(torch.rand(2, 20))
+        targets = Variable(torch.rand(2, 3))
+        
+        outputs = model(inputs)
+        (F.mse_loss(outputs, targets)).backward()
+        optim.step()
+        
+        # call step to iterate its step counter, and send data to loggers.
+        # log indicates to flush the Loggers into their plots
+        TMLogger.step(log=True)
+        
+Results in:
+
+![alt text](imgs/s2.png?raw=true "Title")
 
     
 
-
+### Misc Notes
 There are also some utilities that I wrote down one time to remind myself what the plot and meter types are and the shapes of the inputs they take.
 
-    # list all the meters
-    flexlogger.meter_types()
-
-    # list all plot types
-    flexlogger.plot_types()
     
-    # show docs for a meter type
-    flexlogger.plot_types()
+    flexlogger.meter_types()    # list all the meters
+    flexlogger.plot_types()     # list all plot types
+    flexlogger.plot_types()     # show docs for a meter type
     
-    
-    # list all the preset names 
-    flexlogger.preset_names()
-    
-    # show details for a preset config
-    flexlogger.preset_info('loss+Acc')
+    flexlogger.preset_names()           # list all the preset names 
+    flexlogger.preset_info('loss+Acc')  # show details for a preset config
     
 
 ## Install 
