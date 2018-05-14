@@ -42,7 +42,7 @@ Adding and logging data uses same api as TNT visdom logger (add, log, reset)
     Stat.reset()       # clear everythin
     
     
-Run a fake training loop ![alt text](imgs/s2.png?raw=true "Title")    
+Run a fake training loop ![alt text](imgs/s1.png?raw=true "Title")    
 
     Stat = flexlogger.get_preset_logger('loss+MSE')
     for i in range(5): # do a loop
