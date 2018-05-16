@@ -6,7 +6,10 @@ A utility for visdom metering and logging built on top of TNT, and some utlities
 The idea is to provide a declarative way to generate meters and loggers with a clean api. 
 But isn'y pytorch all about nondeclarative style? 
 Well I find the imperative pythonic expirience useful for stuff where I need to expirement, not for the stuff that I know and just need to make go. 
-Anyway, the meters and loggers are contained in a single object, which is updated by dictionaries of values.
+
+Or maybe it would be good to just have some common debugging things, and have a way to build plots like [mutual information loss](https://arxiv.org/pdf/1703.00810)
+readily available.
+Anyway, the meters and loggers are contained in a single object, which is updated by dictionaries of values. 
 
 ### Considerations 
 
@@ -121,7 +124,8 @@ Results in:
 
 ![alt text](imgs/s2.png?raw=true "Title")
 
-    
+See examples file for mnist example, and the unittests for options on plot inits. Really I think my goal is to have these config files
+for common tasks that work across all my models (like tensorboard, but with control over enviornments and customization )
 
 ### Misc Notes
 There are also some utilities that I wrote down one time to remind myself what the plot and meter types are and the shapes of the inputs they take.
@@ -146,13 +150,10 @@ todo setup.py
 
 1) adding plots on the fly:
 
+
     Stat.add_plot()
     Stat.add_meter()
     Stat.update_defintion()
-
-2) maybe a counter for some plots. When each of the values has been filled, plot those values? 
-
-3) Note to self. tooling for a nn.Module for logging weights and debugging
 
 4) is it worth having modes instead of explicit settings for each logger? 
 Probably not ... Sine config is declarative as it is, it does not need any utility. 
@@ -160,3 +161,11 @@ Probably not ... Sine config is declarative as it is, it does not need any utili
 5) Pass in Klass instead of string? 
 
 6) Implement the mutual information paper - 
+
+5) more tests
+
+6) decide which config layout to use.
+
+
+7) visdom seriazliation tools for test_check
+

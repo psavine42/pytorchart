@@ -4,7 +4,7 @@ from torchnet import meter as METERS
 from torchnet.logger import VisdomPlotLogger, VisdomLogger
 from collections import defaultdict
 from .meter_doc import _meter_defs
-
+import math
 
 _meters = list(_meter_defs.keys())
 _plots = ['line', 'scatter']
@@ -15,7 +15,10 @@ _modes = ['train', 'valid', 'test']
 
 
 class FlexLogger(object):
-    def __init__(self, plot_args, meter_args, **kwargs):
+    def __init__(self,
+                 plot_args,
+                 meter_args,
+                 **kwargs):
         """
 
         :param plot_args: dictionary of definitions for plotters
@@ -42,9 +45,9 @@ class FlexLogger(object):
         self._step = kwargs.get('track_step', True)
         self._ctr  = kwargs.get('step', 0)
 
-        #
-        self._meters = {}
-        self._plots  = {}
+        # hold meters and plots
+        self._meters = defaultdict(dict)
+        self._plots  = defaultdict(dict)
 
         # indexes
         self._plot_to_meter = defaultdict(list)
@@ -54,11 +57,11 @@ class FlexLogger(object):
         self.update_config(plot_args, meter_args)
 
     def update_config(self, plot_args, meter_args):
-        self._init_links(plot_args, meter_args)
+        self._init_links(meter_args)
         self._init_plots(plot_args)
         self._init_meters(meter_args)
 
-    def _init_links(self, plot_args, meter_args):
+    def _init_links(self, meter_args):
         for k, v in meter_args.items():
             target_plot = v.get('target', '')
             self._meter_to_plot[k] = target_plot
@@ -72,48 +75,59 @@ class FlexLogger(object):
 
     def _init_plots(self, plot_args):
         assert isinstance(plot_args, dict), 'plots not defined as map'
-        for name, v in plot_args.items():
-            assert isinstance(v, dict), 'plot {} is not map'.format(name)
-            self._add_plot(name, v)
+        for name, args in plot_args.items():
+            assert isinstance(args, dict), 'plot {} is not map'.format(name)
+            self._add_plot(name, args)
 
-    def _add_plot(self, name, v):
-        plot_type = v.pop('type', None)
+    def _add_plot(self, name, args):
+        """
+        create visdom Plot and add to dictionary
+        :param name:
+        :param args:
+        :return:
+        """
+        plot_type = args.pop('type', None)
         if plot_type is None:
             return
-        port = v.pop('port', self._port)
-        env = v.pop('env', self._env)
-        opts = v.get('opts', {})
+        port = args.pop('port', self._port)
+        env  = args.pop('env', self._env)
+        opts = args.get('opts', {})
+        traceopts = opts.pop('traceopts', {})
+
 
         # set legend to be indexed by corresponding meters
-        opts['legend'] = self._plot_to_meter.get(name)
-        opts['title'] =  v.get('title', name).capitalize()
+        opts['legend'] = sorted(self._plot_to_meter.get(name, []))
+        opts['title'] =  args.get('title', name).capitalize()
 
+        traces = {}
+        for t in opts['legend']:
+            traces[t] = traceopts
+        opts['traceopts'] = traces
         # setup class
         Klass = VisdomPlotLogger if plot_type in _plots else VisdomLogger
-        self._plots[name] = Klass(plot_type, port=port, opts=opts, env=env)
+        self._plots[name]['obj'] = Klass(plot_type, port=port, opts=opts, env=env)
+        self._plots[name]['meta'] = opts # {**opts, **args}
 
-    def _add_meter(self, name, v):
-        meter_type = v.get('type', None)
-        # target_plot = v.get('target', None)
-        opts = v.get('opts', None)
+    def _add_meter(self, name, args):
+        meter_type = args.get('type', 'AverageValueMeter')
+        opts = args.get('opts', None)
 
         Klass = METERS.__dict__.get(meter_type, None)
         if Klass is None:
             print('cannot initialize ', Klass)
             return
         n_args = len(signature(Klass.__init__).parameters)
-        if n_args == 1:
-            self._meters[name] = Klass()
-        elif n_args > 1 and isinstance(opts, list):
-            self._meters[name] = Klass(*opts)
+        if n_args > 1 and isinstance(opts, list):
+            self._meters[name]['obj'] = Klass(*opts)
         elif n_args > 1 and isinstance(opts, dict):
-            self._meters[name] = Klass(**opts)
+            self._meters[name]['obj'] = Klass(**opts)
         else:
-            self._meters[name] = Klass()
+            self._meters[name]['obj'] = Klass()
+        self._meters[name]['meta'] = args
 
     def _prep_key_args(self, keys, items):
         if keys is None:
-            keys = list(items.keys())
+            keys = sorted(list(items.keys()))
         elif isinstance(keys, str):
             keys = [keys]
         return keys
@@ -124,14 +138,16 @@ class FlexLogger(object):
         :param kwargs:
         :return:
         """
+        if self._step is True:
+            self.step()
         for k, v in kwargs.items():
             if k not in self._meters:
                 print('Meter not found ', k)
                 continue
             if isinstance(v, float):
-                self._meters.get(k).add(v)
+                self._meters.get(k).get('obj').add(v)
             else:
-                self._meters.get(k).add(*v)
+                self._meters.get(k).get('obj').add(*v)
 
     def log(self, X=None, keys=None, reset=False):
         """
@@ -144,13 +160,13 @@ class FlexLogger(object):
         plot_keys = self._prep_key_args(keys, self._plots)
         X = self._ctr if X is None or self._step is True else X
         for plot_ky in plot_keys:
-            plot = self._plots.get(plot_ky, None)
+            plot = self._plots.get(plot_ky, {}).get('obj', None)
             if plot is None:
                 print('Key not found ', plot_ky)
                 continue
             YS = []   # get the meters
             for meter_key in self._plot_to_meter.get(plot_ky, []):
-                meter = self._meters.get(meter_key)
+                meter = self._meters.get(meter_key, {}).get('obj')
                 val = meter.value()
                 if isinstance(val, float):
                     YS.append(val)
@@ -160,9 +176,15 @@ class FlexLogger(object):
                     meter.reset()
             if YS:
                 XS = [X] * len(YS)
+                print(XS, YS)
                 plot.log(XS, YS)
-        if self._step is True:
-            self.step()
+
+    def step(self, step=None):
+        if step is None:
+            self._ctr += 1
+        else:
+            self._ctr = step
+        return self._ctr
 
     def save(self, file_path, plots=False):
         """
@@ -185,13 +207,7 @@ class FlexLogger(object):
             if meter is not None:
                 meter.reset()
 
-    def step(self, step=None):
-        if step is None:
-            self._ctr += 1
-        else:
-            self._ctr = step
-        return self._ctr
-
+    # utilities
     def remove_configs(self, keys):
         for k in keys:
             self._meters.pop(k, None)
@@ -211,10 +227,37 @@ class FlexLogger(object):
     def get_meters_for_plot(self, plot_key):
         return self._plot_to_meter.get(plot_key, [])
 
+    def show(self, meta=False):
+        st = '\n'
+        st += 'Step: {}\n'.format(self._ctr)
+        st += 'Plots:\n'
+        for plot, meters in self._plot_to_meter.items():
+            st += ' ' * 2 + plot.capitalize()
+            if meta is True:
+                _meta = self._plots.get(plot, {}).get('meta', '')
+                st += ' ' * 3 + 'meta: ' + str(_meta)
+            st += '\n'
+            for m in meters:
+                mtr = self._meters.get(m, {}).get('obj')
+                if mtr is None:
+                    vl, cls = 0, 'na'
+                else:
+                    vl = mtr.value()
+                    vl = vl if isinstance(vl, float) else vl[0]
+                    cls = mtr.__class__.__name__.capitalize()
+                st += ' ' * 6 + '{} - {} : {:.4f}\n'.format(m.capitalize().ljust(12, ' '), cls, vl)
+                if meta is True:
+                    _meta = self._meters.get(m, {}).get('meta', '')
+                    st += ' ' * 9 + 'meta: ' + str(_meta) + '\n'
+        return st
 
-class ModalLogger(FlexLogger):
-    def __init__(self, *args, **kwargs):
-        super(ModalLogger, self).__init__(*args, **kwargs)
+    def __call__(self, *args, **kwargs):
+        self.add(kwargs)
+
+    def __repr__(self):
+        return self.show(meta=False)
+
+
 
 
 

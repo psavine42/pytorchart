@@ -8,14 +8,23 @@ from torch.autograd import Variable
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 # Loggers
-from src import TooledModelLogger, TooledModel, FlexLogger
+import sys
+from pathlib import Path # if you haven't already done so
+file = Path(__file__).resolve()
+parent, root = file.parent, file.parents[1]
+sys.path.append(str(root))
+try:
+    sys.path.remove(str(parent))
+except ValueError: # Already removed
+    pass
+from logutils import TooledModelLogger, TooledModel, FlexLogger
 
 
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
 parser.add_argument('--batch-size', type=int, default=64, metavar='N', help='input batch size for training (default: 64)')
 parser.add_argument('--test-batch-size', type=int, default=1000, metavar='N', help='input batch size for testing (default: 1000)')
-parser.add_argument('--epochs', type=int, default=10, metavar='N',  help='number of epochs to train (default: 10)')
+parser.add_argument('--epochs', type=int, default=5, metavar='N',  help='number of epochs to train (default: 10)')
 parser.add_argument('--lr', type=float, default=0.01, metavar='LR',  help='learning rate (default: 0.01)')
 parser.add_argument('--momentum', type=float, default=0.5, metavar='M',  help='SGD momentum (default: 0.5)')
 parser.add_argument('--no-cuda', action='store_true', default=False,  help='disables CUDA training')
@@ -78,12 +87,12 @@ optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
 specs = {'basic':   #
             {'': {'weights': [torch.mean, torch.std],
                   'grad_out': [torch.mean, torch.std]}},
-         '':{}
+
          }
 
 
 my_spec = specs.get(args.model_log_cfg, 'basic')    # select logging specifications
-logger = TooledModelLogger(model, my_spec)          # Initialize the logger
+logger = TooledModelLogger(model, spec=my_spec)     # Initialize the logger
 ################################################################################
 
 
@@ -102,7 +111,7 @@ def train(epoch):
         if batch_idx % args.log_interval == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 epoch, batch_idx * len(data), len(train_loader.dataset),
-                100. * batch_idx / len(train_loader), loss.data))
+                100. * batch_idx / len(train_loader), loss.data[0]))
             logger.step(log=True)   # Step and Log
         else:
             logger.step()  # Step and no log (default)
@@ -116,9 +125,9 @@ def test():
         data = Variable(data.cuda() if use_cuda is True else data)
         target = Variable(target.cuda() if use_cuda is True else target)
         output = model(data)
-        test_loss += F.nll_loss(output, target, size_average=False).item() # sum up batch loss
+        test_loss += F.nll_loss(output, target, size_average=False).data[0] # sum up batch loss
         pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
-        correct += pred.eq(target.view_as(pred)).sum().item()
+        correct += pred.eq(target.view_as(pred)).sum().data[0]
 
     test_loss /= len(test_loader.dataset)
     print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(

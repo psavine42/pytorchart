@@ -1,4 +1,4 @@
-from src.logging import FlexLogger, _meters, _meter_defs
+from .flexilogger import FlexLogger, _meters, _meter_defs
 
 _alt_defs = \
     {'simple':
@@ -67,8 +67,9 @@ def get_preset_logger(key, **kwargs):
         return FlexLogger(cfg['plots'], cfg['meters'], **kwargs)
 
 
-def preset_info(key):
-    return _plot_defs.get(key, None)
+def get_preset(key):
+    cfg = _plot_defs.get(key, None)
+    return cfg['plots'], cfg['meters']
 
 
 def preset_names():

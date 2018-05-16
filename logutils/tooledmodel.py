@@ -1,18 +1,136 @@
 import torch
 import pprint
 from collections import OrderedDict, defaultdict
+from .modellogger import FlexLogger
+from torchnet.meter import AverageValueMeter
+from torch.autograd import Variable
 
 
-_HOOKS = {'forward': {'inputs', 'weights', 'outputs'},
-          'backward': {'grad_in', 'grad_out'}}
-
-_forward_hooks = _HOOKS['forward']
-_backwrd_hooks = _HOOKS['backward']
+_HOOKS = {'forward':  ['weights', 'inputs',  'outputs'],
+          'backward': ['na',      'grad_in', 'grad_out']}
+_forward_hooks = set(_HOOKS['forward'])
+_backwrd_hooks = set(_HOOKS['backward'])
+_full_fns = sorted(list(_HOOKS.keys()))
+_datasources = list(_HOOKS.keys()) + list(_forward_hooks) + list(_backwrd_hooks)
 
 _default_metrics = ['grad_in', 'grad_out', 'weights', 'inputs']
-_default_hooks = [torch.mean, torch.std]  # , torch.min, torch.max
+_default_hooks = [torch.mean, torch.std]
 
-# _metrics_dict = {'*fc': {'grad_out': [torch.mean, torch.std]}}
+
+class FlexTooledModel(FlexLogger):
+    """
+
+
+
+    """
+    def __init__(self, plot_args, metrics, model=None, **kwargs):
+        """
+
+        :param opts: list of options
+        """
+        super(FlexTooledModel, self).__init__(plot_args, metrics, **kwargs)
+        self._handles = []
+        self.register_model_dict(model)
+
+    def _init_links(self, meter_args):
+        if isinstance(meter_args, dict):
+            super(self)._init_links(meter_args)
+        else:
+            for mtr in meter_args:
+                target_plot = mtr.get('target', '')
+                k = self._layer_spec_to_name(mtr)
+                self._meter_to_plot[k] = target_plot
+                self._plot_to_meter[target_plot].append(k)
+
+    def _init_meters(self,  meter_args):
+        if isinstance(meter_args, dict):
+            print('NOT YET IMPLEMENTED')
+            pass
+        else:
+            for spec in meter_args:
+                assert isinstance(spec, dict), 'meter {} is not map'.format('')
+                name = self._layer_spec_to_name(spec)
+                self._add_meter(name, spec)
+
+    def _get_datasource_index(self, datasource):
+        if datasource in _full_fns:
+            return _full_fns.index(datasource)
+        elif datasource in _HOOKS['forward']:
+            return 'forward', _HOOKS['forward'].index(datasource)
+        elif datasource in _HOOKS['backward']:
+            return 'backward', _HOOKS['backward'].index(datasource)
+        else:
+            print('datasource not found ' + datasource)
+            return None, None
+
+    def _gen_module_hook(self, module, mtr_name, fn, datasource):
+        def hook_func(*args):
+            arg = args[idx]
+            if isinstance(arg, tuple):
+                self._meters[mtr_name]['obj'].add(fn(arg[0].data))
+            elif isinstance(arg, Variable):
+                self._meters[mtr_name]['obj'].add(fn(arg.data))
+
+        direction, idx = self._get_datasource_index(datasource)
+        if idx is None:
+            return
+        if direction == 'forward':
+            handle = module.register_forward_hook(hook_func)
+        else:
+            handle = module.register_backward_hook(hook_func)
+        self._handles.append(handle)
+
+    def _layer_spec_to_name(self, spec):
+        name = spec.get('name', None)
+        if not name and 'layer' in spec and 'func' in spec:
+            lyer = spec.get('layer', None)
+            data = spec.get('data', None)
+            func = spec.get('func', None).__name__
+            return '{}_{}_{}'.format(lyer, data, func)
+        return name
+
+    # Public Api
+    def register_model_dict(self, model):
+        """
+
+        :param model:
+        :param spec:
+        :return:
+
+        Usage:
+            my_spec = { 0:{'grad_out': [torch.mean], 'weights': [torch.std]}}
+
+            model =  nn.Sequential(nn.Linear(20, 10), nn.Linear(10, 3))
+            TM = TooledModel(model, spec=my_spec)
+
+        """
+        for layer_name, module in list(model._modules.items()):
+            for mtr_name, spec in self._meters.items():
+                spec_ = spec.get('meta', {})
+                lkey = spec_.get('layer', None)
+                if lkey in layer_name:
+                    data = spec_.get('data', '')
+                    func = spec_.get('func', None)
+                    if func is None or data is None:
+                        print('Possible missing Definition ')
+                        continue
+                    self._gen_module_hook(module, mtr_name, func, data)
+
+    def remove_hooks(self):
+        """
+
+        :return:
+        """
+        for handle in self._handles:
+            handle.remove()
+
+    def clear(self):
+        self._handles = []
+        self.remove_hooks()
+
+    def get_handles(self):
+        return self._handles
+
 
 
 class TooledModel(object):
@@ -40,15 +158,15 @@ class TooledModel(object):
 
         :param opts: list of options
         """
-        self._opts = None # [o for o in metrics if o in _default_metrics]
+        self._opts = None
         self._data = None
         self._handles = []
-        self.reset()
+        self.clear()
         if model is not None and spec is None:
             self._opts = [o for o in metrics if o in _default_metrics]
             self.register_model(model, layers=layers, funcs=funcs)
         elif model is not None and spec is not None:
-            self.register_model(model, spec=layers, funcs=funcs)
+            self.register_model_dict(model, spec=spec)
 
     @property
     def register_forward(self):
@@ -66,6 +184,9 @@ class TooledModel(object):
     def all_hooks(self):
         return self._opts
 
+    def get_handles(self):
+        return self._handles
+
     @property
     def all_functions(self):
         func_dic = set()
@@ -81,6 +202,7 @@ class TooledModel(object):
         else:
             return fn.__name__
 
+    # all hooking functions
     def _fwd_weights_hook(self, layer_name, funcs):
         def hook(module, input, output):
             for fn in funcs:
@@ -125,6 +247,7 @@ class TooledModel(object):
 
     def _backward_io_hook(self, layer_name, opts, funcs=_default_hooks):
         """ Functor for gradient hooks """
+        # p#rint(opts)
         def hook(module, grad_in, grad_out):
             for f in funcs:
                 f_name = f.__name__
@@ -145,17 +268,23 @@ class TooledModel(object):
             for func in funcs:
                 self._data[layer_name][opt][self._fn_to_str(func)] = []
 
-    def _register_layer_fwd(self, module, layer_name, funcs, opts, reg=True):
-        if any(opts) is True and any(funcs) is True and reg is True:
-            hook = self._forward_io_hook(layer_name, opts, funcs)
+    def _register_layer_fwd(self, module, layer_name, funcs, triggers, reg=True):
+        if any(triggers) is True and any(funcs) is True and reg is True:
+            hook = self._forward_io_hook(layer_name, triggers, funcs)
             handle = module.register_forward_hook(hook)
             self._handles.append(handle)
 
-    def _register_layer_bwd(self, module, layer_name, funcs, opts, reg=True):
-        if any(opts) is True and any(funcs) is True and reg is True:
-            hook = self._backward_io_hook(layer_name, funcs)
+    def _register_layer_bwd(self, module, layer_name, funcs, triggers, reg=True):
+        if any(triggers) is True and any(funcs) is True and reg is True:
+            hook = self._backward_io_hook(layer_name, triggers, funcs)
             handle = module.register_backward_hook(hook)
             self._handles.append(handle)
+
+    def _match_layer(self, layer, spec_kys):
+        for k in spec_kys.keys():
+            if k in layer:
+                return spec_kys.get(k)
+        return None
 
     # Public Api
     def register_model_dict(self, model, spec):
@@ -172,10 +301,12 @@ class TooledModel(object):
             TM = TooledModel(model, spec=my_spec)
 
         """
+        _opts = set()
         for layer_name, module in list(model._modules.items()):
-            if layer_name in spec:
-                hooks = spec.get(layer_name, {})
+            hooks = self._match_layer(layer_name, spec)
+            if hooks is not None:
                 opts = list(hooks.keys())
+                _opts.update(opts)
                 fwd_fns = hooks.get('inputs', []) + hooks.get('weights', [])
                 bwd_fns = hooks.get('grad_in', []) + hooks.get('grad_out', [])
 
@@ -185,10 +316,11 @@ class TooledModel(object):
                 self._add_layer_index(layer_name, fwd_fns, fwd_triggers)
                 self._add_layer_index(layer_name, bwd_fns, bwd_triggers)
 
-                self._register_layer_fwd(module, layer_name, fwd_triggers, fwd_fns)
-                self._register_layer_bwd(module, layer_name, bwd_triggers, bwd_fns)
+                self._register_layer_fwd(module, layer_name, fwd_fns, fwd_triggers)
+                self._register_layer_bwd(module, layer_name, bwd_fns, bwd_triggers)
                 if len(module._modules) > 0:
                     self.register_model_dict(module, spec)
+        self._opts = list(_opts)
 
     def register_model(self, model, layers=None, funcs=None, spec=None):
         """
@@ -213,8 +345,8 @@ class TooledModel(object):
         for name, module in list(model._modules.items()):
             if layers is None or name in layers:
                 self._add_layer_index(name, funcs, self._opts)
-                self._register_layer_fwd(module, name, funcs, self._opts, self.register_forward)
-                self._register_layer_bwd(module, name, funcs, self._opts, self.register_backward)
+                self._register_layer_fwd(module, name, funcs, self._opts, True)
+                self._register_layer_bwd(module, name, funcs, self._opts, True)
                 if len(module._modules) > 0:
                     self.register_model(module, layers=layers, funcs=funcs)
 
@@ -294,13 +426,3 @@ class TooledModel(object):
         #for summary in self.summaries:
         pass
 
-
-    # def _register_layer(self, module, layer_name, fw_funcs, bw_funcs, fwd=True, bwd=True):
-    #     if fwd is True:
-    #         hook = self._forward_io_hook(layer_name, fw_funcs)
-    #         handle = module.register_forward_hook(hook)
-    #         self._handles.append(handle)
-    #     if bwd is True:
-    #         hook = self._backward_io_hook(layer_name, bw_funcs)
-    #         handle = module.register_backward_hook(hook)
-    #         self._handles.append(handle)
