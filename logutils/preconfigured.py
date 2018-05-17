@@ -44,9 +44,16 @@ _plot_defs = \
             {'loss': {'type': 'line'},
              'mse': {'type': 'line'}},
          'meters':
-            {'train_loss': {'type': 'AverageValueMeter', 'target': 'loss'},
+            {'train_loss':
+                 {'type': 'AverageValueMeter',
+                  'target': 'loss',
+                  'display': {'line': {'color': 'red',
+                                       'dash':'dash'} }},
              'test_loss': {'type': 'AverageValueMeter', 'target': 'loss'},
-             'train_mse': {'type': 'MSEMeter', 'target': 'mse'},
+             'train_mse': {'type': 'MSEMeter', 'target': 'mse',
+                           'display': {'line': {'color': 'red',
+                                                'dash': 'dash'}}
+                           },
              'test_mse': {'type': 'MSEMeter', 'target': 'mse'}
             }
          },

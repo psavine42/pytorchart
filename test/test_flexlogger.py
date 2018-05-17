@@ -16,7 +16,7 @@ def mse_values(keys):
 class TestLoggers(unittest.TestCase):
     def setUp(self):
         self.LG1 = get_preset_logger('loss+MSE')
-        pprint.pprint(self.LG1.get_plot_definitions())
+        # pprint.pprint(self.LG1)
         self.step = 0
 
     def test_single(self):

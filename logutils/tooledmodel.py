@@ -1,8 +1,7 @@
 import torch
 import pprint
-from collections import OrderedDict, defaultdict
+from collections import defaultdict
 from .modellogger import FlexLogger
-from torchnet.meter import AverageValueMeter
 from torch.autograd import Variable
 
 
@@ -26,31 +25,31 @@ class FlexTooledModel(FlexLogger):
     def __init__(self, plot_args, metrics, model=None, **kwargs):
         """
 
-        :param opts: list of options
+        :param kwargs: list of options
         """
         super(FlexTooledModel, self).__init__(plot_args, metrics, **kwargs)
         self._handles = []
-        self.register_model_dict(model)
+        if model is not None:
+            self.register_model(model)
 
     def _init_links(self, meter_args):
         if isinstance(meter_args, dict):
             super(self)._init_links(meter_args)
-        else:
-            for mtr in meter_args:
-                target_plot = mtr.get('target', '')
-                k = self._layer_spec_to_name(mtr)
-                self._meter_to_plot[k] = target_plot
-                self._plot_to_meter[target_plot].append(k)
+            return
+        for mtr in meter_args:
+            target_plot = mtr.get('target', '')
+            k = self._layer_spec_to_name(mtr)
+            self._meter_to_plot[k] = target_plot
+            self._plot_to_meter[target_plot].append(k)
 
     def _init_meters(self,  meter_args):
         if isinstance(meter_args, dict):
             print('NOT YET IMPLEMENTED')
-            pass
-        else:
-            for spec in meter_args:
-                assert isinstance(spec, dict), 'meter {} is not map'.format('')
-                name = self._layer_spec_to_name(spec)
-                self._add_meter(name, spec)
+            return # name=
+        for spec in meter_args:
+            assert isinstance(spec, dict), 'meter {} is not map'.format('')
+            name = self._layer_spec_to_name(spec)
+            self._add_meter(name, spec)
 
     def _get_datasource_index(self, datasource):
         if datasource in _full_fns:
@@ -60,7 +59,7 @@ class FlexTooledModel(FlexLogger):
         elif datasource in _HOOKS['backward']:
             return 'backward', _HOOKS['backward'].index(datasource)
         else:
-            print('datasource not found ' + datasource)
+            print('invalid datasource ' + datasource)
             return None, None
 
     def _gen_module_hook(self, module, mtr_name, fn, datasource):
@@ -90,11 +89,11 @@ class FlexTooledModel(FlexLogger):
         return name
 
     # Public Api
-    def register_model_dict(self, model):
+    # todo - add register first option for stepping on first input
+    def register_model(self, model, step_on_first=True):
         """
 
         :param model:
-        :param spec:
         :return:
 
         Usage:
@@ -109,12 +108,14 @@ class FlexTooledModel(FlexLogger):
                 spec_ = spec.get('meta', {})
                 lkey = spec_.get('layer', None)
                 if lkey in layer_name:
-                    data = spec_.get('data', '')
+                    data = spec_.get('data', None)
                     func = spec_.get('func', None)
                     if func is None or data is None:
                         print('Possible missing Definition ')
                         continue
                     self._gen_module_hook(module, mtr_name, func, data)
+            if len(module._modules) > 0:
+                self.register_model(module)
 
     def remove_hooks(self):
         """
@@ -125,8 +126,9 @@ class FlexTooledModel(FlexLogger):
             handle.remove()
 
     def clear(self):
-        self._handles = []
         self.remove_hooks()
+        self._handles = []
+
 
     def get_handles(self):
         return self._handles

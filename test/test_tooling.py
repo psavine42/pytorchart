@@ -96,7 +96,6 @@ class TestTools(unittest.TestCase):
             TM.log()
             TM.step()
 
-
     def test_spec_all(self):
         spec = {'': {'weights': [torch.mean, torch.std],
                      'grad_out': [torch.mean, torch.std]}}
@@ -138,8 +137,7 @@ class TestTools(unittest.TestCase):
     def test_custom_plots2(self):
         traceopts = dict(mode = 'markers', line=dict(dash = 'dot'))
         plots =  {'plt1': {'type': 'line', 'opts':
-                             { #'markers': True,
-                              # 'ytype': 'log',
+                             {
                               'traceopts':traceopts,
                               'markersize': 2
                              }},
