@@ -57,6 +57,24 @@ _plot_defs = \
              'test_mse': {'type': 'MSEMeter', 'target': 'mse'}
             }
          },
+     'tishby_plot':
+        {'lambda':None,
+         'plots':
+            {'grads_weights': {'type': 'line'}},
+         'meters':
+            {'train_loss':
+                 {'type': 'AverageValueMeter',
+                  'target': 'loss',
+                  'display': {'line': {'color': 'red',
+                                       'dash': 'dash'} }},
+             'test_loss': {'type': 'AverageValueMeter', 'target': 'loss'},
+             'train_mse': {'type': 'MSEMeter', 'target': 'mse',
+                           'display': {'line': {'color': 'red',
+                                                'dash': 'dash'}}
+                           },
+             'test_mse': {'type': 'MSEMeter', 'target': 'mse'}
+            }
+         },
      'grads':
         {'plots':
             {'grad': {'type': 'line'}},
@@ -94,3 +112,41 @@ def meter_types():
 
 def meter_info(name):
     return _meter_defs.get(name, None)
+
+
+# Plots that require a model
+def model_plot():
+    pass
+
+
+def fc_conv():
+    pass
+
+
+
+
+
+
+
+
+
+
+"""
+
+meter + model + funcs -> layer_func_datasource_
+
+
+
+"""
+
+
+
+
+
+
+
+
+
+
+
+
