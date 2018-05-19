@@ -3,10 +3,16 @@ import pprint
 from collections import defaultdict
 from .modellogger import FlexLogger
 from torch.autograd import Variable
+import torch.nn as nn
 
 
 _HOOKS = {'forward':  ['weights', 'inputs',  'outputs'],
           'backward': ['na',      'grad_in', 'grad_out']}
+_HOOKS2 = {'forward':  {'weights', 'inputs',  'outputs'},
+           'backward': {'weights': [],
+                        'grad_in': ['weights', 'bias', 'input'],
+                        'grad_out': None}}
+
 _forward_hooks = set(_HOOKS['forward'])
 _backwrd_hooks = set(_HOOKS['backward'])
 _full_fns = sorted(list(_HOOKS.keys()))
@@ -14,6 +20,30 @@ _datasources = list(_HOOKS.keys()) + list(_forward_hooks) + list(_backwrd_hooks)
 
 _default_metrics = ['grad_in', 'grad_out', 'weights', 'inputs']
 _default_hooks = [torch.mean, torch.std]
+
+
+# class GradGen(object):
+
+    # def make_grad_hook(self, idx):
+    #     def unwrap(x):
+    #         if isinstance(x, Variable):
+    #             x = x.data
+    #         if torch.is_tensor(x) and x.numel() == 1:
+    #             return x[0]
+    #         return x
+    #
+    #     def hook_part(*args):
+    #         arg = args[idx]
+    #         if isinstance(arg, tuple):
+    #             self._meters[mtr_name]['obj'].add(fn(arg[0].data))
+    #         elif isinstance(arg, Variable):
+    #             self._meters[mtr_name]['obj'].add(fn(arg.data))
+    #         return None
+    #
+    #     def hook_full(*args):
+    #         d = unwrap(fn(*args))
+    #         self._meters[mtr_name]['obj'].add(d)
+    #         return None
 
 
 class FlexTooledModel(FlexLogger):
@@ -32,9 +62,11 @@ class FlexTooledModel(FlexLogger):
         if model is not None:
             self.register_model(model)
 
+    #######################
+
     def _init_links(self, meter_args):
         if isinstance(meter_args, dict):
-            super(self)._init_links(meter_args)
+            super(FlexTooledModel, self)._init_links(meter_args)
             return
         for mtr in meter_args:
             target_plot = mtr.get('target', '')
@@ -44,16 +76,20 @@ class FlexTooledModel(FlexLogger):
 
     def _init_meters(self,  meter_args):
         if isinstance(meter_args, dict):
-            print('NOT YET IMPLEMENTED')
-            return # name=
+            super(FlexTooledModel, self)._init_meters(meter_args)
+            return
         for spec in meter_args:
             assert isinstance(spec, dict), 'meter {} is not map'.format('')
             name = self._layer_spec_to_name(spec)
             self._add_meter(name, spec)
 
+    #######################
     def _get_datasource_index(self, datasource):
+        """
+
+        """
         if datasource in _full_fns:
-            return _full_fns.index(datasource)
+            return datasource, -1
         elif datasource in _HOOKS['forward']:
             return 'forward', _HOOKS['forward'].index(datasource)
         elif datasource in _HOOKS['backward']:
@@ -63,20 +99,55 @@ class FlexTooledModel(FlexLogger):
             return None, None
 
     def _gen_module_hook(self, module, mtr_name, fn, datasource):
-        def hook_func(*args):
+        def unwrap(x):
+            if isinstance(x, Variable):
+                x = x.data
+            if torch.is_tensor(x) and x.numel() == 1:
+                return x[0]
+            return x
+
+        direction, idx = self._get_datasource_index(datasource)
+        # create function for args
+        # module.weight
+
+        def hook_part(*args):
             arg = args[idx]
             if isinstance(arg, tuple):
                 self._meters[mtr_name]['obj'].add(fn(arg[0].data))
             elif isinstance(arg, Variable):
                 self._meters[mtr_name]['obj'].add(fn(arg.data))
+            return None
 
-        direction, idx = self._get_datasource_index(datasource)
+        def hook_full(*args):
+            d = unwrap(fn(*args))
+            self._meters[mtr_name]['obj'].add(d)
+            return None
+
+        def _wrt(module, ix, kys=['weights']):
+            n_grads = ['weights', 'outputs']
+            if module.bias is True:
+                n_grads.insert(1, 'bias')
+
+            idxs = []
+            for k in kys:
+                if k in n_grads:
+                    idxs.append(n_grads.index(k))
+
+            def _hook_full(*args):
+                _args = [args[ix][i] for i in idxs]
+                d = unwrap(fn(_args))
+                self._meters[mtr_name]['obj'].add(d)
+                return None
+            return _hook_full
+
         if idx is None:
             return
+        hook = hook_full if idx == -1 else hook_part
+
         if direction == 'forward':
-            handle = module.register_forward_hook(hook_func)
+            handle = module.register_forward_hook(hook)
         else:
-            handle = module.register_backward_hook(hook_func)
+            handle = module.register_backward_hook(hook)
         self._handles.append(handle)
 
     def _layer_spec_to_name(self, spec):
@@ -88,8 +159,28 @@ class FlexTooledModel(FlexLogger):
             return '{}_{}_{}'.format(lyer, data, func)
         return name
 
-    # Public Api
-    # todo - add register first option for stepping on first input
+    @classmethod
+    def generate_model_dict(cls, model, meter_args, **kwargs):
+        """
+        turn a bunch of dictionaries into
+        """
+        dicts = []
+        for layer_name, module in list(model._modules.items()):
+            for spec in meter_args:
+                lkey = spec.get('layer', None)
+                if callable(lkey):
+                    use_layer = lkey(layer_name, module)
+                else:
+                    use_layer = lkey in layer_name
+                data = spec.get('data', None)
+                func = spec.get('func', None)
+                if use_layer is False or func is None or data is None:
+                    continue
+
+            if len(module._modules) > 0:
+                cls.generate_model_dict(module, meter_args, **kwargs)
+        return dicts
+
     def register_model(self, model, step_on_first=True):
         """
 
@@ -107,13 +198,14 @@ class FlexTooledModel(FlexLogger):
             for mtr_name, spec in self._meters.items():
                 spec_ = spec.get('meta', {})
                 lkey = spec_.get('layer', None)
-                if lkey in layer_name:
-                    data = spec_.get('data', None)
-                    func = spec_.get('func', None)
-                    if func is None or data is None:
-                        print('Possible missing Definition ')
-                        continue
-                    self._gen_module_hook(module, mtr_name, func, data)
+                if lkey is None or lkey != layer_name:
+                    continue
+                data = spec_.get('data', None)
+                func = spec_.get('func', None)
+                if func is None or data is None:
+                    print('Possible missing Definition ')
+                    continue
+                self._gen_module_hook(module, mtr_name, func, data)
             if len(module._modules) > 0:
                 self.register_model(module)
 
@@ -129,10 +221,8 @@ class FlexTooledModel(FlexLogger):
         self.remove_hooks()
         self._handles = []
 
-
     def get_handles(self):
         return self._handles
-
 
 
 class TooledModel(object):

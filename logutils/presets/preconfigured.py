@@ -1,4 +1,5 @@
-from .flexilogger import FlexLogger, _meters, _meter_defs
+from logutils.flexilogger import FlexLogger, _meters, _meter_defs
+import numpy as np
 
 _alt_defs = \
     {'simple':
@@ -46,9 +47,7 @@ _plot_defs = \
          'meters':
             {'train_loss':
                  {'type': 'AverageValueMeter',
-                  'target': 'loss',
-                  'display': {'line': {'color': 'red',
-                                       'dash':'dash'} }},
+                  'target': 'loss'},
              'test_loss': {'type': 'AverageValueMeter', 'target': 'loss'},
              'train_mse': {'type': 'MSEMeter', 'target': 'mse',
                            'display': {'line': {'color': 'red',
@@ -57,23 +56,15 @@ _plot_defs = \
              'test_mse': {'type': 'MSEMeter', 'target': 'mse'}
             }
          },
-     'tishby_plot':
-        {'lambda':None,
-         'plots':
-            {'grads_weights': {'type': 'line'}},
+     'loss+accuracy':
+        {'plots':
+            {'loss': {'type': 'line'},
+             'accuracy': {'type': 'line'}},
          'meters':
-            {'train_loss':
-                 {'type': 'AverageValueMeter',
-                  'target': 'loss',
-                  'display': {'line': {'color': 'red',
-                                       'dash': 'dash'} }},
+            {'train_loss': {'type': 'AverageValueMeter', 'target': 'loss'},
              'test_loss': {'type': 'AverageValueMeter', 'target': 'loss'},
-             'train_mse': {'type': 'MSEMeter', 'target': 'mse',
-                           'display': {'line': {'color': 'red',
-                                                'dash': 'dash'}}
-                           },
-             'test_mse': {'type': 'MSEMeter', 'target': 'mse'}
-            }
+             'train_acc': {'type': 'AverageValueMeter', 'target': 'accuracy'},
+             'test_acc':  {'type': 'AverageValueMeter', 'target': 'accuracy'}}
          },
      'grads':
         {'plots':

@@ -1,7 +1,6 @@
-import time, pickle, pprint
+import time, pickle
 from inspect import signature
 from torchnet import meter as METERS
-from torchnet.logger import VisdomPlotLogger, VisdomLogger
 from collections import defaultdict
 from .meter_doc import _meter_defs
 from .Loggers import TraceLogger
@@ -15,7 +14,7 @@ _loggers = ['heatmap'
 _modes = ['train', 'valid', 'test']
 
 
-class FlexLogger(object):
+class FlexLogger:
     def __init__(self, plot_args, meter_args, **kwargs):
         """
 
@@ -40,9 +39,9 @@ class FlexLogger(object):
         self._env  = kwargs.get('env', None)
         self._guid = kwargs.get('uid', str(time.time()).split('.')[0])
         self._port = kwargs.get('port', 8097)
-        self._step = kwargs.get('track_step', True)
+        self._step = kwargs.get('track_step', False)
         self._ctr  = kwargs.get('step', 0)
-
+        self.debug = kwargs.get('debug', False)
         # hold meters and plots
         self._meters = defaultdict(dict)
         self._plots  = defaultdict(dict)
@@ -55,6 +54,12 @@ class FlexLogger(object):
         self.update_config(plot_args, meter_args)
 
     def update_config(self, plot_args, meter_args):
+        """
+        Api for adding meters and plots
+        :param plot_args:
+        :param meter_args:
+        :return:
+        """
         self._init_links(meter_args)
         self._init_meters(meter_args)
         self._init_plots(plot_args)
@@ -94,23 +99,16 @@ class FlexLogger(object):
 
         # set legend to be indexed by corresponding meters
         opts['legend'] = sorted(self._plot_to_meter.get(name, []))
-        opts['title']  = args.get('title', name).capitalize()
+        opts['title']  = args.get('title', name)
 
-        # todo trace oiptiosn
-        # print(opts['legend'])
-        # print(self._meters.keys())
         traces = {}
         for mtr_name in opts['legend']:
             plot_opts = self._meters.get(mtr_name, {}).get('meta', {}).get('display', {})
             plot_opts['name'] = mtr_name
             traces[mtr_name] = plot_opts
-
         opts['data'] = traces
-        # pprint.pprint(traces)
-        # Klass = TraceLogger # if plot_type == 'line' else VisdomLogger
-        # Klass = VisdomPlotLogger if plot_type in _plots else VisdomLogger
-        # self._plots[name]['obj'] = Klass(plot_type, port=port, opts=opts, env=env)
-        self._plots[name]['obj'] = TraceLogger(title=opts['legend'], port=port, opts=opts, env=env)
+        self._plots[name]['obj'] = TraceLogger(
+            title=opts['legend'], port=port, opts=opts, env=env)
         self._plots[name]['meta'] = opts # {**opts, **args}
 
     def _add_meter(self, name, args):
@@ -142,21 +140,19 @@ class FlexLogger(object):
         :param kwargs:
         :return:
         """
-        if self._step is True:
-            self.step()
         for k, v in kwargs.items():
             if k not in self._meters:
                 print('Meter not found ', k)
                 continue
-            if isinstance(v, float):
+            if type(v) in [int, float]:
                 self._meters.get(k).get('obj').add(v)
             else:
                 self._meters.get(k).get('obj').add(*v)
 
-    def log(self, X=None, keys=None, reset=False):
+    def log(self, X=None, keys=None, reset=False, step=False):
         """
 
-        :param keys: X integer - X axis Value
+        :param X: X integer - X axis Value
         :param keys: list of names of plots
         :param reset: reset meters after plotting
         :return:
@@ -178,9 +174,12 @@ class FlexLogger(object):
                     YS.append(val[0])
                 if reset is True:
                     meter.reset()
+            YS = list(filter(lambda v: v == v, YS))
             if YS:
                 XS = [X] * len(YS)
                 plot.log(XS, YS)
+        if step is True:
+            self.step()
 
     def step(self, step=None):
         if step is None:
