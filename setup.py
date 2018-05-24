@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 VERSION = '0.0.1'
 
-long_description = "an abstraction for debugging neural networks"
+long_description = "an abstraction for logging neural network expirements"
 
 setup_info = dict(
     # Metadata
@@ -21,13 +21,11 @@ setup_info = dict(
 
     # Package info
     packages=find_packages(exclude=('test', 'imgs')),
-
     zip_safe=True,
-
     install_requires=[
         'torch',
         'six',
-        'visdom'
+        'visdom',
         'torchnet'
     ]
 )

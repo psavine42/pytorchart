@@ -1,3 +1,4 @@
 from . import functional
-from .preconfigured import get_preset, get_preset_logger
+from . import preconfigured
+from .preconfigured import Config, get_presets
 

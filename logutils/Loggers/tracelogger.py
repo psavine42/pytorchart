@@ -1,6 +1,10 @@
 from visdom import Visdom
 from .style_utils import _def_opts, _def_layout, _spec, lyout_spec
-import pickle, pprint
+import pickle, math, pprint
+from ..utils import deep_merge
+
+
+_nan = float('NaN')
 
 
 class TraceLogger(object):
@@ -8,20 +12,25 @@ class TraceLogger(object):
                  *args,
                  opts={},
                  vis=None,
-                 title=[],
+                 legend=[],
                  env=None,
                  port=8097,
                  **kwargs):
-        self._title = title
+        self._legend = legend
         self._port  = port
         self._win   = None
         self._env   = env if env is not None else 'main'
 
-        self._opts  = {**_def_opts, **opts.get('opts', {})}
-        self._layout = {**_def_layout, **opts.get('layout', {})}
+        self._opts   = deep_merge(_def_opts, opts.get('opts', {}))
+        self._layout = deep_merge(_def_layout, opts.get('layout', {}))
+        self._layout['title'] = opts.get('title', '').capitalize()
 
-        self._lines  = self.init_lines(title, opts.get('data', {}))
+        self._lines  = self.init_lines(legend, opts.get('data', {}))
         self._viz    = vis if isinstance(vis, Visdom) else Visdom(port=port)
+        self._traces = [0] * len(self._lines)
+        self._debug = kwargs.get('debug', False)
+        if self._debug is True:
+            print(self._opts)
 
     @property
     def viz(self):
@@ -33,6 +42,13 @@ class TraceLogger(object):
 
     @classmethod
     def check_trace(cls, opts, pre='', mp_spec=_spec):
+        """
+
+        :param opts:
+        :param pre:
+        :param mp_spec:
+        :return:
+        """
         _opts = {}
         for k, value in opts.items():
             fk = k if pre == '' else pre + '.' + k
@@ -73,30 +89,57 @@ class TraceLogger(object):
             lines.append(opts_dict)
         return lines
 
-    def _create_trace(self, X, Y):
-        data_to_send = {
-            'data': [],
+    @property
+    def _base_data(self):
+        return {
             'win': self._win,
             'eid': self._env,
             'layout': self._layout,
             'opts': self._opts,
         }
+
+    def _create_trace(self, X, Y, first=False):
+        """
+
+        :param X:
+        :param Y:
+        :return:
+        """
         assert len(X) == len(Y), 'X and Y inputs not same size'
+        data_to_send, data = None, []
+
         for i, (x, y) in enumerate(zip(X, Y)):
+            if y is None or math.isnan(y):
+                y = None
+                if self._win is not None:
+                    continue
             line_dict = self._lines[i].copy()
             line_dict['x'] = [x]
             line_dict['y'] = [y]
-            data_to_send['data'].append(line_dict)
+            data.append(line_dict)
+
+        if data != []:
+            data_to_send = self._base_data
+            data_to_send['data'] = data
+
         return data_to_send
 
     def log(self, X, Y):
+        """
+
+        :param X:
+        :param Y:
+        :return:
+        """
         ds = self._create_trace(X, Y)
-        if self._win is not None:
+
+        if self._win is not None and ds is not None:
+            # print(len(ds['data']))
             ds['append'] = True
             ds['win'] = self._win
             self._viz._send(ds, endpoint='update')
-        else:
-            print('starting plot ')
+        elif self._win is None and ds is not None:
+            print('starting plot ', self._layout['title'], len(ds['data']), self._legend)
             self._win = self._viz._send(ds, endpoint='events')
 
     def __repr__(self):

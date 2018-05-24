@@ -2,7 +2,7 @@ import torch
 import pprint, random
 import unittest
 from visdom import Visdom
-from logutils import get_preset_logger, FlexLogger, TraceLogger
+from logutils import FlexLogger, TraceLogger
 import numpy as np
 
 

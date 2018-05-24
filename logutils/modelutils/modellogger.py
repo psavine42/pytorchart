@@ -1,6 +1,6 @@
 from collections import defaultdict
-from .flexilogger import FlexLogger
-from .tooledmodel import TooledModel
+from logutils.flexilogger import FlexLogger
+# from .tooledmodel import TooledModel
 
 
 class TooledModelLogger(object):
@@ -43,7 +43,7 @@ class TooledModelLogger(object):
                  **kwargs):
         self._cfg = kwargs
         self._Logger = None
-        self._TM = TooledModel(model, metrics=metrics, spec=spec)
+        self._TM = None # TooledModel(model, metrics=metrics, spec=spec)
         self._tm_to_logger = defaultdict()
         # self._ctr = 0
         if mode == 'by_layer':

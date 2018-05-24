@@ -1,7 +1,7 @@
 import torch
 import pprint, random
 import unittest
-from logutils import FlexLogger, get_preset_logger
+from logutils import FlexLogger
 
 
 def random_update(keys):
@@ -15,7 +15,7 @@ def mse_values(keys):
 
 class TestLoggers(unittest.TestCase):
     def setUp(self):
-        self.LG1 = get_preset_logger('loss+MSE')
+        self.LG1 = FlexLogger.from_presets('loss', 'mse')
         # pprint.pprint(self.LG1)
         self.step = 0
 

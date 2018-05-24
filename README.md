@@ -160,12 +160,11 @@ Probably not ... Sine config is declarative as it is, it does not need any utili
 
 5) Pass in Klass instead of string? 
 
-6) Implement the mutual information paper - 
-
 5) more tests
 
 6) decide which config layout to use.
 
-
 7) visdom seriazliation tools for test_check
+
+8) do something 
 

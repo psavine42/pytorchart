@@ -1,7 +1,7 @@
 import torch
 
 
-_meter_defs = \
+meter_defs = \
     {'MovingAverageValueMeter': [],
      'AUCMeter': [],
      'ClassErrorMeter': [],
