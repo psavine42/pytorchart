@@ -1,7 +1,7 @@
 import torch
 import pprint, random
 import unittest
-from logutils import FlexLogger
+from pytorchart import FlexLogger
 
 
 def random_update(keys):

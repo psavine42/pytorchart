@@ -1,9 +1,10 @@
 import torch
-import unittest, pprint
-from logutils import FlexTooledModel
-from logutils.presets.preconfigured import get_preset, get_presets, Config
 from torch.autograd import Variable
-from logutils import functional as Fn
+import unittest, pprint
+from pytorchart import FlexTooledModel
+from pytorchart.presets.preconfigured import get_preset, get_presets, Config
+from pytorchart import functional as Fn
+
 import random
 from example.testmodels import *
 
