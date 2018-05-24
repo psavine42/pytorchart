@@ -1,0 +1,198 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pytorchart.presets.preconfigured &#8212; pytorchart  documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pytorchart.presets.preconfigured</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pytorchart.utils</span> <span class="k">import</span> <span class="n">deep_merge</span><span class="p">,</span> <span class="n">deepcopy</span>
+
+
+<span class="n">_plot_defs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;simple&#39;</span><span class="p">:</span>
+        <span class="p">{</span><span class="s1">&#39;plots&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;line&#39;</span><span class="p">}},</span>
+         <span class="s1">&#39;meters&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;AverageValueMeter&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;value&#39;</span><span class="p">}}},</span>
+     <span class="c1"># todo other stuff</span>
+     <span class="c1"># class accuracy, AUC, PUCT ImageMeter</span>
+     <span class="s1">&#39;image&#39;</span><span class="p">:</span> <span class="c1"># todo finish</span>
+         <span class="p">{</span><span class="s1">&#39;plots&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;image&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;image&#39;</span><span class="p">}},</span>
+          <span class="s1">&#39;meters&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;image&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ImageMeter&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;image&#39;</span><span class="p">}}},</span>
+     <span class="s1">&#39;confusion&#39;</span><span class="p">:</span>
+         <span class="p">{</span><span class="s1">&#39;plots&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;confusion_view&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;image&#39;</span><span class="p">}},</span>
+          <span class="s1">&#39;meters&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;confusion&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;ConfusionMeter&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;confusion_view&#39;</span><span class="p">}}},</span>
+     <span class="s1">&#39;acc&#39;</span><span class="p">:</span>
+         <span class="p">{</span><span class="s1">&#39;plots&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;acc&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;line&#39;</span><span class="p">}},</span>
+          <span class="s1">&#39;meters&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;acc&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;AverageValueMeter&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;acc&#39;</span><span class="p">}}},</span>
+     <span class="s1">&#39;mse&#39;</span><span class="p">:</span>
+         <span class="p">{</span><span class="s1">&#39;plots&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;mse&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;line&#39;</span><span class="p">}},</span>
+          <span class="s1">&#39;meters&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;mse&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;MSEMeter&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;mse&#39;</span><span class="p">}}},</span>
+     <span class="s1">&#39;loss&#39;</span><span class="p">:</span>
+         <span class="p">{</span><span class="s1">&#39;plots&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;line&#39;</span><span class="p">}},</span>
+          <span class="s1">&#39;meters&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;AverageValueMeter&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;loss&#39;</span><span class="p">}}}</span>
+<span class="p">}</span>
+
+<span class="n">_default_phases</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="Config"><a class="viewcode-back" href="../../../source/pytorchart.presets.html#pytorchart.presets.preconfigured.Config">[docs]</a><span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Config.get_meters"><a class="viewcode-back" href="../../../source/pytorchart.presets.html#pytorchart.presets.preconfigured.Config.get_meters">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_meters</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="p">):</span></div>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="Config.build_phases"><a class="viewcode-back" href="../../../source/pytorchart.presets.html#pytorchart.presets.preconfigured.Config.build_phases">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">build_phases</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">meter_cfg</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">mk</span> <span class="o">=</span> <span class="n">k</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">c</span>
+        <span class="n">plt</span> <span class="o">=</span> <span class="n">_plot_defs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">plt</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;meters&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">phase</span> <span class="ow">in</span> <span class="n">phases</span><span class="p">:</span>
+                <span class="n">meter</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">meter</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
+                <span class="n">meter</span><span class="p">[</span><span class="s1">&#39;phase&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phase</span>
+                <span class="n">meter_cfg</span><span class="p">[</span><span class="n">phase</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">mk</span><span class="p">]</span> <span class="o">=</span> <span class="n">meter</span>
+        <span class="n">spec</span><span class="p">[</span><span class="s1">&#39;meters&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meter_cfg</span></div>
+        <span class="k">return</span> <span class="n">spec</span>
+
+<div class="viewcode-block" id="Config.gen_plot"><a class="viewcode-back" href="../../../source/pytorchart.presets.html#pytorchart.presets.preconfigured.Config.gen_plot">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">gen_plot</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">keys</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">phases</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">phases</span> <span class="o">=</span> <span class="n">_default_phases</span>
+        <span class="n">cfg</span> <span class="o">=</span> <span class="n">deep_merge</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">build_phases</span><span class="p">(</span><span class="s1">&#39;simple&#39;</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">plot</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">plot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+            <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span></div>
+        <span class="k">return</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">],</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;meters&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Config.get_presets"><a class="viewcode-back" href="../../../source/pytorchart.presets.html#pytorchart.presets.preconfigured.Config.get_presets">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_presets</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">keys</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">phases</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">phases</span> <span class="o">=</span> <span class="n">_default_phases</span>
+        <span class="n">cfg</span> <span class="o">=</span> <span class="n">deep_merge</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">build_phases</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">phases</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">])</span>
+        <span class="c1"># pprint.pprint(cfg)</span></div>
+        <span class="k">return</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">],</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;meters&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Config.default_cfg"><a class="viewcode-back" href="../../../source/pytorchart.presets.html#pytorchart.presets.preconfigured.Config.default_cfg">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">default_cfg</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span></div></div>
+        <span class="k">return</span> <span class="n">_plot_defs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;simple&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+
+<span class="c1"># PRESET CONFIGURATIONS</span>
+<span class="c1"># def get_preset_logger(key, **kwargs):</span>
+<span class="c1">#     if key in _plot_defs:</span>
+<span class="c1">#         cfg = _plot_defs[key]</span>
+<span class="c1">#         return FlexLogger(cfg[&#39;plots&#39;], cfg[&#39;meters&#39;], **kwargs)</span>
+
+
+<div class="viewcode-block" id="get_preset"><a class="viewcode-back" href="../../../source/pytorchart.presets.html#pytorchart.presets.preconfigured.get_preset">[docs]</a><span class="k">def</span> <span class="nf">get_preset</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+    <span class="n">cfg</span> <span class="o">=</span> <span class="n">_plot_defs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">],</span> <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;meters&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="get_presets"><a class="viewcode-back" href="../../../source/pytorchart.presets.html#pytorchart.presets.preconfigured.get_presets">[docs]</a><span class="k">def</span> <span class="nf">get_presets</span><span class="p">(</span><span class="o">*</span><span class="n">keys</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="n">_default_phases</span><span class="p">):</span></div>
+    <span class="k">return</span> <span class="n">Config</span><span class="o">.</span><span class="n">get_presets</span><span class="p">(</span><span class="o">*</span><span class="n">keys</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="n">phases</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_meters"><a class="viewcode-back" href="../../../source/pytorchart.presets.html#pytorchart.presets.preconfigured.get_meters">[docs]</a><span class="k">def</span> <span class="nf">get_meters</span><span class="p">(</span><span class="o">*</span><span class="n">keys</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="n">_default_phases</span><span class="p">):</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">meters</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">get_presets</span><span class="p">(</span><span class="o">*</span><span class="n">keys</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="n">phases</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">meter</span> <span class="ow">in</span> <span class="n">meters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">meter</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;target&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">meters</span>
+
+
+<span class="c1"># METERS AND PLOT INFO</span>
+<div class="viewcode-block" id="preset_names"><a class="viewcode-back" href="../../../source/pytorchart.presets.html#pytorchart.presets.preconfigured.preset_names">[docs]</a><span class="k">def</span> <span class="nf">preset_names</span><span class="p">():</span></div>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">_plot_defs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+
+<span class="c1"># def plot_types():</span>
+<span class="c1">#     return _meters</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1"># def meter_types():</span>
+<span class="c1">#     return _meters</span>
+
+
+<span class="c1"># def meter_info(name):</span>
+<span class="c1">#     return meter_defs.get(name, None)</span>
+
+
+
+
+
+
+
+
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, psavine.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

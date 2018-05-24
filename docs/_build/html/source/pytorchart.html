@@ -1,0 +1,514 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pytorchart package &#8212; pytorchart  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pytorchart-package">
+<h1>pytorchart package<a class="headerlink" href="#pytorchart-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pytorchart.Loggers.html">pytorchart.Loggers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pytorchart.Loggers.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorchart.Loggers.html#module-pytorchart.Loggers.style_utils">pytorchart.Loggers.style_utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorchart.Loggers.html#module-pytorchart.Loggers.tracelogger">pytorchart.Loggers.tracelogger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorchart.Loggers.html#module-pytorchart.Loggers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pytorchart.moremeters.html">pytorchart.moremeters package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pytorchart.moremeters.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorchart.moremeters.html#module-pytorchart.moremeters.bestmeter">pytorchart.moremeters.bestmeter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorchart.moremeters.html#module-pytorchart.moremeters.image_meter">pytorchart.moremeters.image_meter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorchart.moremeters.html#module-pytorchart.moremeters">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pytorchart.presets.html">pytorchart.presets package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pytorchart.presets.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorchart.presets.html#module-pytorchart.presets.functional">pytorchart.presets.functional module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorchart.presets.html#module-pytorchart.presets.preconfigured">pytorchart.presets.preconfigured module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorchart.presets.html#module-pytorchart.presets">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pytorchart.flexilogger">
+<span id="pytorchart-flexilogger-module"></span><h2>pytorchart.flexilogger module<a class="headerlink" href="#module-pytorchart.flexilogger" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pytorchart.flexilogger.FlexLogger">
+<em class="property">class </em><code class="descclassname">pytorchart.flexilogger.</code><code class="descname">FlexLogger</code><span class="sig-paren">(</span><em>plot_args</em>, <em>meter_args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base object for logging. It takes some specifications for meters
+and for plots, indexes them, and adds a hook to send data to plots on log.</p>
+<p>Examples:</p>
+<dl class="method">
+<dt id="pytorchart.flexilogger.FlexLogger.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>kwargs={}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.add" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.flexilogger.FlexLogger.add_metrics_for">
+<code class="descname">add_metrics_for</code><span class="sig-paren">(</span><em>*args</em>, <em>plot=None</em>, <em>phases=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.add_metrics_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.add_metrics_for" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>args</strong> – </li>
+<li><strong>plot</strong> – </li>
+<li><strong>phases</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.flexilogger.FlexLogger.add_presets">
+<code class="descname">add_presets</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.add_presets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.add_presets" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pytorchart.flexilogger.FlexLogger.from_presets">
+<em class="property">classmethod </em><code class="descname">from_presets</code><span class="sig-paren">(</span><em>*args</em>, <em>phases=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.from_presets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.from_presets" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>args</strong> – </li>
+<li><strong>phases</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.flexilogger.FlexLogger.get_meter_names">
+<code class="descname">get_meter_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.get_meter_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.get_meter_names" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.flexilogger.FlexLogger.get_meters_for_plot">
+<code class="descname">get_meters_for_plot</code><span class="sig-paren">(</span><em>plot_key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.get_meters_for_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.get_meters_for_plot" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>plot_key</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.flexilogger.FlexLogger.get_plot_definitions">
+<code class="descname">get_plot_definitions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.get_plot_definitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.get_plot_definitions" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.flexilogger.FlexLogger.get_plot_names">
+<code class="descname">get_plot_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.get_plot_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.get_plot_names" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="pytorchart.flexilogger.FlexLogger.load">
+<em class="property">static </em><code class="descname">load</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.load" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.flexilogger.FlexLogger.log">
+<code class="descname">log</code><span class="sig-paren">(</span><em>X=None</em>, <em>keys=None</em>, <em>reset=False</em>, <em>step=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.log" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> – X integer - X axis Value</li>
+<li><strong>keys</strong> – list of names of plots</li>
+<li><strong>reset</strong> – reset meters after plotting</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.flexilogger.FlexLogger.remove_configs">
+<code class="descname">remove_configs</code><span class="sig-paren">(</span><em>keys</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.remove_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.remove_configs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.flexilogger.FlexLogger.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><em>keys=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets all of own meters. If keys kwd is specified,
+only resets the meters with those key names.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>keys</strong> – list[str] list of keys which will be reset.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.flexilogger.FlexLogger.save">
+<code class="descname">save</code><span class="sig-paren">(</span><em>file_path</em>, <em>plots=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>saves this object, and the visdom state if plots is True
+todo implement lol
+:return: None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.flexilogger.FlexLogger.show">
+<code class="descname">show</code><span class="sig-paren">(</span><em>meta=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation for __repr__ with additional functionality.
+__repr__ shows only meters, but show gives options to show metadata
+for charts and meters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>meta</strong> – (boolean)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(string) detailed representation of self.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Examples:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create Logger</span>
+<span class="n">Stat</span> <span class="o">=</span> <span class="n">FlexLogger</span><span class="p">(</span><span class="s1">&#39;loss&#39;</span><span class="p">,</span> <span class="s1">&#39;acc&#39;</span><span class="p">)</span>
+<span class="n">Stat</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Plots:</span>
+<span class="go">    loss</span>
+<span class="go">        train_loss   - AverageValueMeter : nan</span>
+<span class="go">        test_loss    - AverageValueMeter : nan</span>
+<span class="go">     acc</span>
+<span class="go">        test_acc     - AverageValueMeter : nan</span>
+<span class="go">        train_acc    - AverageValueMeter : nan</span>
+<span class="go">    Not plotted:</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.flexilogger.FlexLogger.step">
+<code class="descname">step</code><span class="sig-paren">(</span><em>step=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Increments the internal counter, or sets to value of :step arg</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>step</strong> – (int) if step is specified, sets the internal counter to that step</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(int) updated step count</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.flexilogger.FlexLogger.update_config">
+<code class="descname">update_config</code><span class="sig-paren">(</span><em>plot_args</em>, <em>meter_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.update_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.update_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Api for adding meters and plots.
+:param plot_args:
+:param meter_args:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.flexilogger.FlexLogger.value">
+<code class="descname">value</code><span class="sig-paren">(</span><em>keys=None</em>, <em>phases=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pytorchart.flexilogger.FlexLogger.vis">
+<code class="descname">vis</code><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.vis" title="Permalink to this definition">¶</a></dt>
+<dd><p>property: Retrieve the Visdom() object for fun or profit
+:return: Visdom() object</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pytorchart.meter_doc">
+<span id="pytorchart-meter-doc-module"></span><h2>pytorchart.meter_doc module<a class="headerlink" href="#module-pytorchart.meter_doc" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pytorchart.tooledmodel">
+<span id="pytorchart-tooledmodel-module"></span><h2>pytorchart.tooledmodel module<a class="headerlink" href="#module-pytorchart.tooledmodel" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pytorchart.tooledmodel.FlexTooledModel">
+<em class="property">class </em><code class="descclassname">pytorchart.tooledmodel.</code><code class="descname">FlexTooledModel</code><span class="sig-paren">(</span><em>plot_args</em>, <em>metrics</em>, <em>model=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/tooledmodel.html#FlexTooledModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.tooledmodel.FlexTooledModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pytorchart.flexilogger.FlexLogger" title="pytorchart.flexilogger.FlexLogger"><code class="xref py py-class docutils literal notranslate"><span class="pre">pytorchart.flexilogger.FlexLogger</span></code></a></p>
+<dl class="method">
+<dt id="pytorchart.tooledmodel.FlexTooledModel.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/tooledmodel.html#FlexTooledModel.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.tooledmodel.FlexTooledModel.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="pytorchart.tooledmodel.FlexTooledModel.generate_model_dict">
+<em class="property">classmethod </em><code class="descname">generate_model_dict</code><span class="sig-paren">(</span><em>model</em>, <em>meter_args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/tooledmodel.html#FlexTooledModel.generate_model_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.tooledmodel.FlexTooledModel.generate_model_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>turn a bunch of dictionaries into</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.tooledmodel.FlexTooledModel.get_handles">
+<code class="descname">get_handles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/tooledmodel.html#FlexTooledModel.get_handles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.tooledmodel.FlexTooledModel.get_handles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.tooledmodel.FlexTooledModel.register_model">
+<code class="descname">register_model</code><span class="sig-paren">(</span><em>model</em>, <em>step_on_first=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/tooledmodel.html#FlexTooledModel.register_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.tooledmodel.FlexTooledModel.register_model" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Usage:</dt>
+<dd><p class="first">my_spec = { 0:{‘grad_out’: [torch.mean], ‘weights’: [torch.std]}}</p>
+<p class="last">model =  nn.Sequential(nn.Linear(20, 10), nn.Linear(10, 3))
+TM = TooledModel(model, spec=my_spec)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.tooledmodel.FlexTooledModel.remove_hooks">
+<code class="descname">remove_hooks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/tooledmodel.html#FlexTooledModel.remove_hooks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.tooledmodel.FlexTooledModel.remove_hooks" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pytorchart.utils">
+<span id="pytorchart-utils-module"></span><h2>pytorchart.utils module<a class="headerlink" href="#module-pytorchart.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pytorchart.utils.deep_merge">
+<code class="descclassname">pytorchart.utils.</code><code class="descname">deep_merge</code><span class="sig-paren">(</span><em>*dicts</em>, <em>update=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/utils.html#deep_merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.utils.deep_merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merges dicts deeply.</p>
+<p>Shamelesly lifted from  <a class="reference external" href="https://gist.github.com/yatsu/68660bea18edfe7e023656c250661086">https://gist.github.com/yatsu/68660bea18edfe7e023656c250661086</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dicts</strong> – list[dict] List of dicts.</li>
+<li><strong>update</strong> – bool Whether to update the first dict or create a new dict.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Merged dict.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pytorchart.utils.get_in">
+<code class="descclassname">pytorchart.utils.</code><code class="descname">get_in</code><span class="sig-paren">(</span><em>o</em>, <em>kys</em>, <em>d=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/utils.html#get_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.utils.get_in" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>o</strong> – </li>
+<li><strong>kys</strong> – </li>
+<li><strong>d</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pytorchart.visdomtools">
+<span id="pytorchart-visdomtools-module"></span><h2>pytorchart.visdomtools module<a class="headerlink" href="#module-pytorchart.visdomtools" title="Permalink to this headline">¶</a></h2>
+<p>If we serialize a visdom env, there is theoretically a way to parse it.</p>
+</div>
+<div class="section" id="module-pytorchart">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pytorchart" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pytorchart package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pytorchart.flexilogger">pytorchart.flexilogger module</a></li>
+<li><a class="reference internal" href="#module-pytorchart.meter_doc">pytorchart.meter_doc module</a></li>
+<li><a class="reference internal" href="#module-pytorchart.tooledmodel">pytorchart.tooledmodel module</a></li>
+<li><a class="reference internal" href="#module-pytorchart.utils">pytorchart.utils module</a></li>
+<li><a class="reference internal" href="#module-pytorchart.visdomtools">pytorchart.visdomtools module</a></li>
+<li><a class="reference internal" href="#module-pytorchart">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/source/pytorchart.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, psavine.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/source/pytorchart.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

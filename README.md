@@ -24,39 +24,56 @@ If you like tnt's MeterLogger, but also like logging random things like histogra
 Api for preset configurations (somewhat inspired by Cadene's pretrainedmodels). 
 Adding and logging data uses same api as TNT visdom logger (add, log, reset)
 
-    import flexlogger
+    from pytorchart import FlexLogger
     
-    # create a logger object
-    Stat = flexlogger.get_preset_logger('loss+MSE')
+    # quick way to create a logger object
+    Stat = FlexLogger.from_presets('loss', 'mse')
     
     # print out the plots and meters providing their data
     Stat.get_definitions()
     >>> {'loss': ['train_loss', 'test_loss'],
          'mse': ['train_mse', 'test_mse']}
     
-    # log stuff one by one
+    # ADDING DATA
+    # log stuff one by one as dict of keys
     Stat.add({'train_mse': [torch.randn([4, 20]), torch.randn([4, 20])]})
-    Stat.add({'test_mse': [torch.randn([4, 20]), torch.randn([4, 20])]})
     
-    Stat.add({'train_loss': 0.7, 'test_loss': 0.7]})    # or log several keys at once 
+    # call method defaults to adding with keyword
+    Stat.add(test_mse=[torch.randn([4, 20]), torch.randn([4, 20])])
+    
+    # call takes multiple keys as long as they exist
+    Stat(train_loss=0.7, test_loss=0.7)    # or log several keys at once 
+    
+    # TRAINING PROCESS
+    # usually, in training it goes something like
+    output = model(data)
+    loss = criterion(target, output)
+    loss.backward()
+    optimizer.step()
+    
+    # FlexLogger tracks its own step counter (or you can add a hook)
+    Stat.step()     # simple update of internal counter
     
     # or log all the keys with the None option, and reset the meters by default.
-    Stat.log(epoch)
-    Stat.reset()       # clear everythin
+    Stat.log()    # plots the data in all meters to respective plots
+    Stat.reset()  # resets meters
     
+    # log takes some keyward args to reset the meters, and to add a step as well
+    # keys can be used to log/reset etc meters with only some keys
+    Stat.log(reset=True, step=True, keys=['train_mse', 'test_mse'])
     
+   
 Run a fake training loop ![alt text](imgs/s1.png?raw=true "Title")    
 
-    Stat = flexlogger.get_preset_logger('loss+MSE')
+    Stat = FlexLogger.from_presets('loss', 'mse')
     for i in range(5): # do a loop
-        Stat.add({'train_loss': random.random(), 'test_loss': random.random()]})
-        Stat.add({k: [torch.randn(4, 20), torch.randn(4, 20)] for k in ['test_mse', 'train_mse']})
-        Stat.log(i)
+        Stat(train_loss=random.random(), test_loss=random.random()])
+        Stat(**{k: [torch.randn(4, 20), torch.randn(4, 20)] for k in ['test_mse', 'train_mse']})
+        Stat.log(step=True, reset=True)
                 
 
 Defining custom configured loggers is done with dictionaries, and visdom kwargs. 
 These are a bit clunky, but I tend to put my definitions in a file somewhere and reuse all over the place...
-
 
     Stat = flexlogger.FlexLogger(
                 {'loss': {'type': 'line'}
@@ -131,12 +148,12 @@ for common tasks that work across all my models (like tensorboard, but with cont
 There are also some utilities that I wrote down one time to remind myself what the plot and meter types are and the shapes of the inputs they take.
 
     
-    flexlogger.meter_types()    # list all the meters
-    flexlogger.plot_types()     # list all plot types
-    flexlogger.plot_types()     # show docs for a meter type
+    Stat.meter_types()    # list all the meters
+    Stat.plot_types()     # list all plot types
+    Stat.plot_types()     # show docs for a meter type
     
-    flexlogger.preset_names()           # list all the preset names 
-    flexlogger.preset_info('loss+Acc')  # show details for a preset config
+    Stat.preset_names()           # list all the preset names 
+    Stat.preset_info('loss+Acc')  # show details for a preset config
     
 
 ### Install 

@@ -1,0 +1,485 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pytorchart.flexilogger &#8212; pytorchart  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pytorchart.flexilogger</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">pickle</span><span class="o">,</span> <span class="nn">visdom</span>
+<span class="kn">from</span> <span class="nn">inspect</span> <span class="k">import</span> <span class="n">signature</span>
+<span class="kn">from</span> <span class="nn">torchnet</span> <span class="k">import</span> <span class="n">meter</span> <span class="k">as</span> <span class="n">METERS</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">.meter_doc</span> <span class="k">import</span> <span class="n">meter_defs</span>
+<span class="kn">from</span> <span class="nn">.Loggers</span> <span class="k">import</span> <span class="n">TraceLogger</span>
+<span class="c1"># import presets</span>
+
+<span class="kn">import</span> <span class="nn">torch</span><span class="o">,</span> <span class="nn">pprint</span>
+
+
+<span class="n">_meters</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">meter_defs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="n">_plots</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="s1">&#39;scatter&#39;</span><span class="p">]</span>
+<span class="n">_loggers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;heatmap&#39;</span>
+            <span class="c1"># image</span>
+            <span class="p">]</span>
+<span class="c1">#  = [&#39;train&#39;, &#39;valid&#39;, &#39;test&#39;]</span>
+
+
+<div class="viewcode-block" id="FlexLogger"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger">[docs]</a><span class="k">class</span> <span class="nc">FlexLogger</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base object for logging. It takes some specifications for meters</span>
+<span class="sd">    and for plots, indexes them, and adds a hook to send data to plots on log.</span>
+
+<span class="sd">    Examples:</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_args</span><span class="p">,</span> <span class="n">meter_args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+
+
+<span class="sd">        :param plot_args: dictionary of definitions for plotters</span>
+<span class="sd">        :param meter_args: dictionary of definitions for meters</span>
+<span class="sd">        :param meter_args: dictionary of definitions for meters</span>
+<span class="sd">        :Attributes:</span>
+<span class="sd">            _meters:</span>
+<span class="sd">            _plots :</span>
+<span class="sd">            _links : map of { meters: plots }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># saving a copy of args for now</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;meter&#39;</span><span class="p">:</span> <span class="n">meter_args</span><span class="p">,</span> <span class="s1">&#39;plot&#39;</span><span class="p">:</span> <span class="n">plot_args</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_env</span>  <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;env&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_guid</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;uid&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_port</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;port&#39;</span><span class="p">,</span> <span class="mi">8097</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;track_step&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ctr</span>  <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;step&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_viz</span> <span class="o">=</span> <span class="n">visdom</span><span class="o">.</span><span class="n">Visdom</span><span class="p">()</span>
+        <span class="c1"># hold meters and plots</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plots</span>  <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="c1"># indexes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phase_to_meter</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plot_to_meter</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_meter_to_plot</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
+        <span class="c1"># initialization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_config</span><span class="p">(</span><span class="n">plot_args</span><span class="p">,</span> <span class="n">meter_args</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FlexLogger.update_config"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.update_config">[docs]</a>    <span class="k">def</span> <span class="nf">update_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_args</span><span class="p">,</span> <span class="n">meter_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Api for adding meters and plots.</span>
+<span class="sd">        :param plot_args:</span>
+<span class="sd">        :param meter_args:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_links</span><span class="p">(</span><span class="n">meter_args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_meters</span><span class="p">(</span><span class="n">meter_args</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_plots</span><span class="p">(</span><span class="n">plot_args</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">mtr</span><span class="p">):</span>
+        <span class="n">target_plot</span> <span class="o">=</span> <span class="n">mtr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;target&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_meter_to_plot</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_plot</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plot_to_meter</span><span class="p">[</span><span class="n">target_plot</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_init_links</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meter_args</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">meter_args</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_link</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_init_meters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meter_args</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meter_args</span><span class="p">,</span> <span class="nb">dict</span><span class="p">),</span> <span class="s1">&#39;meters not defined as map&#39;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">meter_args</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">),</span> <span class="s1">&#39;meter </span><span class="si">{}</span><span class="s1"> is not map&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_meter</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_init_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_args</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plot_args</span><span class="p">,</span> <span class="nb">dict</span><span class="p">),</span> <span class="s1">&#39;plots not defined as map&#39;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">args</span> <span class="ow">in</span> <span class="n">plot_args</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_plot</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        create visdom Plot and add to dictionary</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :param args:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">plot_type</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">plot_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;invalid plot type&#39;</span><span class="p">,</span> <span class="n">plot_type</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;port&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">)</span>
+        <span class="n">env</span>  <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;env&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="p">)</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;opts&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="c1"># set legend to be indexed by corresponding meters</span>
+        <span class="n">opts</span><span class="p">[</span><span class="s1">&#39;legend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_to_meter</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">opts</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">name</span> <span class="c1"># args.get(&#39;title&#39;, name)</span>
+
+        <span class="n">traces</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">mtr_name</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">[</span><span class="s1">&#39;legend&#39;</span><span class="p">]:</span>
+            <span class="n">plot_opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">mtr_name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;meta&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">plot_opts</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mtr_name</span>
+            <span class="n">traces</span><span class="p">[</span><span class="n">mtr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">plot_opts</span>
+        <span class="n">opts</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">traces</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plots</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;meta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">opts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plots</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;obj&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TraceLogger</span><span class="p">(</span>
+            <span class="n">legend</span><span class="o">=</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;legend&#39;</span><span class="p">],</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">opts</span><span class="o">=</span><span class="n">opts</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_viz</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_meter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="n">meter_type</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;AverageValueMeter&#39;</span><span class="p">)</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;opts&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">Klass</span> <span class="o">=</span> <span class="n">METERS</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">meter_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Klass</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;cannot initialize &#39;</span><span class="p">,</span> <span class="n">Klass</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">n_args</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">signature</span><span class="p">(</span><span class="n">Klass</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n_args</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;obj&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Klass</span><span class="p">(</span><span class="o">*</span><span class="n">opts</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">n_args</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;obj&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Klass</span><span class="p">(</span><span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;obj&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Klass</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;meta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span>
+
+    <span class="k">def</span> <span class="nf">_prep_key_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">items</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">keys</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">keys</span>
+
+<div class="viewcode-block" id="FlexLogger.add"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Meter not found &#39;</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;obj&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]:</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;obj&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FlexLogger.log"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.log">[docs]</a>    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param X: X integer - X axis Value</span>
+<span class="sd">        :param keys: list of names of plots</span>
+<span class="sd">        :param reset: reset meters after plotting</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">plot_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prep_key_args</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plots</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctr</span> <span class="k">if</span> <span class="n">X</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="ow">is</span> <span class="kc">True</span> <span class="k">else</span> <span class="n">X</span>
+        <span class="k">for</span> <span class="n">plot_ky</span> <span class="ow">in</span> <span class="n">plot_keys</span><span class="p">:</span>
+            <span class="n">plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plots</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">plot_ky</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;obj&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">plot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Key not found &#39;</span><span class="p">,</span> <span class="n">plot_ky</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">YS</span> <span class="o">=</span> <span class="p">[]</span>   <span class="c1"># get the meters</span>
+            <span class="n">kys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_to_meter</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">plot_ky</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="k">for</span> <span class="n">meter_key</span> <span class="ow">in</span> <span class="n">kys</span><span class="p">:</span>
+                <span class="n">meter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">meter_key</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;obj&#39;</span><span class="p">)</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">meter</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+                    <span class="n">YS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+                    <span class="n">YS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">YS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">reset</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">meter</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">YS</span><span class="p">:</span>
+                <span class="n">XS</span> <span class="o">=</span> <span class="p">[</span><span class="n">X</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">YS</span><span class="p">)</span>
+                <span class="n">plot</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">XS</span><span class="p">,</span> <span class="n">YS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+<div class="viewcode-block" id="FlexLogger.step"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Increments the internal counter, or sets to value of :step arg</span>
+
+<span class="sd">        :param step: (int) if step is specified, sets the internal counter to that step</span>
+<span class="sd">        :return: (int) updated step count</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ctr</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s1">&#39;step must be integer, got </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">step</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ctr</span> <span class="o">=</span> <span class="n">step</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctr</span>
+
+<div class="viewcode-block" id="FlexLogger.save"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">plots</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        saves this object, and the visdom state if plots is True</span>
+<span class="sd">        todo implement lol</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># raise NotImplementedError(&#39;not yet implemented&#39;)</span></div>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FlexLogger.load"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.load">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">obj</span>
+
+<div class="viewcode-block" id="FlexLogger.reset"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resets all of own meters. If keys kwd is specified,</span>
+<span class="sd">        only resets the meters with those key names.</span>
+
+<span class="sd">        :param keys: list[str] list of keys which will be reset.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prep_key_args</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="n">meter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;obj&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">meter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span></div>
+                <span class="n">meter</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+<div class="viewcode-block" id="FlexLogger.remove_configs"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.remove_configs">[docs]</a>    <span class="k">def</span> <span class="nf">remove_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_plots</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_plot_to_meter</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_meter_to_plot</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FlexLogger.get_plot_names"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.get_plot_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_plot_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_to_meter</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+<div class="viewcode-block" id="FlexLogger.get_plot_definitions"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.get_plot_definitions">[docs]</a>    <span class="k">def</span> <span class="nf">get_plot_definitions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_to_meter</span>
+
+<div class="viewcode-block" id="FlexLogger.get_meter_names"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.get_meter_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_meter_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_meter_to_plot</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+<div class="viewcode-block" id="FlexLogger.get_meters_for_plot"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.get_meters_for_plot">[docs]</a>    <span class="k">def</span> <span class="nf">get_meters_for_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param plot_key:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_to_meter</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">plot_key</span><span class="p">,</span> <span class="p">[])</span>
+
+<div class="viewcode-block" id="FlexLogger.value"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.value">[docs]</a>    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prep_key_args</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span><span class="p">)</span>
+        <span class="n">mp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="n">meter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;obj&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">meter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">meter</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+                    <span class="n">mp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+                    <span class="n">mp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">mp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;missing meter with key &#39;</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+                <span class="n">mp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">mp</span>
+
+<div class="viewcode-block" id="FlexLogger.add_presets"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.add_presets">[docs]</a>    <span class="k">def</span> <span class="nf">add_presets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+
+
+<span class="sd">        :param args:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Config</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_config</span><span class="p">(</span><span class="o">*</span><span class="n">Config</span><span class="o">.</span><span class="n">get_presets</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))</span>
+
+<div class="viewcode-block" id="FlexLogger.add_metrics_for"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.add_metrics_for">[docs]</a>    <span class="k">def</span> <span class="nf">add_metrics_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param args:</span>
+<span class="sd">        :param plot:</span>
+<span class="sd">        :param phases:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">plot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="kn">from</span> <span class="nn">.presets</span> <span class="k">import</span> <span class="n">Config</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_config</span><span class="p">(</span><span class="o">*</span><span class="n">Config</span><span class="o">.</span><span class="n">gen_plot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="n">plot</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="n">phases</span><span class="p">))</span>
+
+<div class="viewcode-block" id="FlexLogger.from_presets"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.from_presets">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_presets</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param args:</span>
+<span class="sd">        :param phases:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.presets</span>  <span class="k">import</span> <span class="n">Config</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">Config</span><span class="o">.</span><span class="n">get_presets</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="n">phases</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">vis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        property: Retrieve the Visdom() object for fun or profit</span>
+<span class="sd">        :return: Visdom() object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_viz</span>
+
+<div class="viewcode-block" id="FlexLogger.show"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Implementation for __repr__ with additional functionality.</span>
+<span class="sd">            __repr__ shows only meters, but show gives options to show metadata</span>
+<span class="sd">            for charts and meters.</span>
+
+<span class="sd">            :param meta: (boolean)</span>
+<span class="sd">            :return: (string) detailed representation of self.</span>
+
+<span class="sd">            :Examples:</span>
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                # create Logger</span>
+<span class="sd">                Stat = FlexLogger(&#39;loss&#39;, &#39;acc&#39;)</span>
+<span class="sd">                Stat.show()</span>
+
+<span class="sd">            .. code-block:: console</span>
+
+<span class="sd">                Plots:</span>
+<span class="sd">                    loss</span>
+<span class="sd">                        train_loss   - AverageValueMeter : nan</span>
+<span class="sd">                        test_loss    - AverageValueMeter : nan</span>
+<span class="sd">                     acc</span>
+<span class="sd">                        test_acc     - AverageValueMeter : nan</span>
+<span class="sd">                        train_acc    - AverageValueMeter : nan</span>
+<span class="sd">                    Not plotted:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">seen</span><span class="p">,</span> <span class="n">st</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(),</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+        <span class="k">def</span> <span class="nf">show_meter</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+            <span class="n">mtr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;obj&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mtr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">vl</span><span class="p">,</span> <span class="bp">cls</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;na&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">vl</span> <span class="o">=</span> <span class="n">mtr</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+                <span class="n">vl</span> <span class="o">=</span> <span class="n">vl</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vl</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="k">else</span> <span class="n">vl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="bp">cls</span> <span class="o">=</span> <span class="n">mtr</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="n">st</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="mi">6</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> - </span><span class="si">{}</span><span class="s1"> : </span><span class="si">{:.4f}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">vl</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">meta</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">_meta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;meta&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">st</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="mi">9</span> <span class="o">+</span> <span class="s1">&#39;meta: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">_meta</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="k">return</span> <span class="n">st</span>
+
+        <span class="n">st</span> <span class="o">+=</span> <span class="s1">&#39;Step: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ctr</span><span class="p">)</span>
+        <span class="n">st</span> <span class="o">+=</span> <span class="s1">&#39;Plots:</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">for</span> <span class="n">plot</span><span class="p">,</span> <span class="n">meters</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_to_meter</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">st</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">plot</span>
+            <span class="k">if</span> <span class="n">meta</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">_meta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plots</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;meta&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">st</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="s1">&#39;meta: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">_meta</span><span class="p">)</span>
+            <span class="n">st</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">meters</span><span class="p">:</span>
+                <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+                <span class="n">st</span> <span class="o">=</span> <span class="n">show_meter</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+
+        <span class="n">st</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="s1">&#39; Not plotted:&#39;</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_meters</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">m</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+                <span class="n">st</span> <span class="o">=</span> <span class="n">show_meter</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">st</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">meta</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+
+
+
+
+
+
+
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, psavine.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,11 +1,13 @@
+"""
+Module for the FlexLogger Class
+
+"""
 import time, pickle, visdom
 from inspect import signature
 from torchnet import meter as METERS
 from collections import defaultdict
 from .meter_doc import meter_defs
 from .Loggers import TraceLogger
-# import presets
-
 import torch, pprint
 
 
@@ -14,12 +16,21 @@ _plots = ['line', 'scatter']
 _loggers = ['heatmap'
             # image
             ]
-#  = ['train', 'valid', 'test']
 
 
 class FlexLogger:
+    """
+    Base object for logging. It takes some specifications for meters
+    and for plots, indexes them, and adds a hook to send data to plots on log.
+
+    Examples:
+
+
+    """
     def __init__(self, plot_args, meter_args, **kwargs):
         """
+
+
 
         :param plot_args: dictionary of definitions for plotters
         :param meter_args: dictionary of definitions for meters
@@ -28,14 +39,6 @@ class FlexLogger:
             _meters:
             _plots :
             _links : map of { meters: plots }
-
-        Usages:
-          ReportLogger(
-            {'loss': {'type': 'line',  'opts': [] } }
-
-            {'train_loss': {'type': 'averagevaluemeter',  'target': 'loss' },
-             'test_loss':  {'type': 'averagevaluemeter',  'target': 'loss' },  })
-
         """
         # saving a copy of args for now
         self._args = {'meter': meter_args, 'plot': plot_args}
@@ -59,7 +62,7 @@ class FlexLogger:
 
     def update_config(self, plot_args, meter_args):
         """
-        Api for adding meters and plots
+        Api for adding meters and plots.
         :param plot_args:
         :param meter_args:
         :return:
@@ -142,11 +145,11 @@ class FlexLogger:
 
     def add(self, kwargs={}):
         """
+        Add a dictitionary of values to meters.
 
         :param kwargs:
         :return:
         """
-        # phase = kwargs.get('phase', None)
         for k, v in kwargs.items():
             if k not in self._meters:
                 print('Meter not found ', k)
@@ -156,7 +159,7 @@ class FlexLogger:
             elif type(v) in [list, tuple]:
                 self._meters.get(k).get('obj').add(*v)
 
-    def log(self, X=None, keys=None, reset=False, step=False, phase=None):
+    def log(self, X=None, keys=None, reset=False, step=False):
         """
 
         :param X: X integer - X axis Value
@@ -182,11 +185,8 @@ class FlexLogger:
                     YS.append(val[0])
                 else:
                     YS.append(None)
-                    # YS.append(float('NaN'))
                 if reset is True:
                     meter.reset()
-            # YS = list(filter(lambda v: v == v, YS))
-            # print(list(zip(kys, YS)))
             if YS:
                 XS = [X] * len(YS)
                 plot.log(XS, YS)
@@ -194,9 +194,16 @@ class FlexLogger:
             self.step()
 
     def step(self, step=None):
+        """
+        Increments the internal counter, or sets to value of :step arg
+
+        :param step: (int) if step is specified, sets the internal counter to that step
+        :return: (int) updated step count
+        """
         if step is None:
             self._ctr += 1
         else:
+            assert isinstance(step, int), 'step must be integer, got {}'.format(type(step))
             self._ctr = step
         return self._ctr
 
@@ -204,9 +211,9 @@ class FlexLogger:
         """
         saves this object, and the visdom state if plots is True
         todo implement lol
-        :return:
+        :return: None
         """
-        # raise NotImplementedError('not yet implemented')
+        raise NotImplementedError('not yet implemented')
         pickle.dump(self, file_path)
 
     @staticmethod
@@ -214,7 +221,14 @@ class FlexLogger:
         obj = pickle.load(file_path)
         return obj
 
-    def reset(self, keys=None, phase=None):
+    def reset(self, keys=None):
+        """
+        Resets all of own meters. If keys kwd is specified,
+        only resets the meters with those key names.
+
+        :param keys: list[str] list of keys which will be reset.
+        :return: None
+        """
         keys = self._prep_key_args(keys, self._meters)
         for k in keys:
             meter = self._meters.get(k, {}).get('obj')
@@ -229,15 +243,32 @@ class FlexLogger:
             self._meter_to_plot.pop(k, None)
 
     def get_plot_names(self):
+        """
+
+        :return:
+        """
         return list(self._plot_to_meter.keys())
 
     def get_plot_definitions(self):
+        """
+
+        :return:
+        """
         return self._plot_to_meter
 
     def get_meter_names(self):
+        """
+
+        :return:
+        """
         return list(self._meter_to_plot.keys())
 
     def get_meters_for_plot(self, plot_key):
+        """
+
+        :param plot_key:
+        :return:
+        """
         return self._plot_to_meter.get(plot_key, [])
 
     def value(self, keys=None, phases=None):
@@ -259,6 +290,11 @@ class FlexLogger:
         return mp
 
     def add_presets(self, *args):
+        """
+
+        :param args:
+        :return:
+        """
         from . import Config
         self.update_config(*Config.get_presets(*args))
 
@@ -287,11 +323,41 @@ class FlexLogger:
 
     @property
     def vis(self):
+        """
+        property: Retrieve the Visdom() object for fun or profit
+        :return: Visdom() object
+        """
         return self._viz
 
     def show(self, meta=False):
-        seen = set()
-        st = '\n'
+        """
+            Implementation for __repr__ with additional functionality.
+            __repr__ shows only meters, but show gives options to show metadata
+            for charts and meters.
+
+            :param meta: (boolean)
+            :return: (string) detailed representation of self.
+
+            :Examples:
+            .. code-block:: python
+
+                # create Logger
+                Stat = FlexLogger('loss', 'acc')
+                Stat.show()
+
+            .. code-block:: console
+
+                Plots:
+                    loss
+                        train_loss   - AverageValueMeter : nan
+                        test_loss    - AverageValueMeter : nan
+                     acc
+                        test_acc     - AverageValueMeter : nan
+                        train_acc    - AverageValueMeter : nan
+                    Not plotted:
+
+        """
+        seen, st = set(), '\n'
 
         def show_meter(st, m):
             mtr = self._meters.get(m, {}).get('obj')

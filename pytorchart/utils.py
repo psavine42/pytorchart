@@ -3,6 +3,13 @@ from functools import reduce
 
 
 def get_in(o, kys, d=None):
+    """
+
+    :param o:
+    :param kys:
+    :param d:
+    :return:
+    """
     ob = o.copy()
     while ob and kys:
         k = kys.pop(0)
@@ -15,18 +22,12 @@ def get_in(o, kys, d=None):
 def deep_merge(*dicts, update=False):
     """
     Merges dicts deeply.
-    Parameters
-    ----------
-    dicts : list[dict]
-        List of dicts.
-    update : bool
-        Whether to update the first dict or create a new dict.
-    Returns
-    -------
-    merged : dict
-        Merged dict.
 
-    shamelesly lifted from  https://gist.github.com/yatsu/68660bea18edfe7e023656c250661086
+    Shamelesly lifted from  https://gist.github.com/yatsu/68660bea18edfe7e023656c250661086
+
+    :param dicts: list[dict] List of dicts.
+    :param update: bool Whether to update the first dict or create a new dict.
+    :return: Merged dict.
     """
     def merge_into(d1, d2):
         for key in d2:

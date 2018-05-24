@@ -1,0 +1,229 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pytorchart.modelutils package &#8212; pytorchart  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pytorchart-modelutils-package">
+<h1>pytorchart.modelutils package<a class="headerlink" href="#pytorchart-modelutils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pytorchart.modelutils.modellogger">
+<span id="pytorchart-modelutils-modellogger-module"></span><h2>pytorchart.modelutils.modellogger module<a class="headerlink" href="#module-pytorchart.modelutils.modellogger" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pytorchart.modelutils.modellogger.TooledModelLogger">
+<em class="property">class </em><code class="descclassname">pytorchart.modelutils.modellogger.</code><code class="descname">TooledModelLogger</code><span class="sig-paren">(</span><em>model</em>, <em>plot_args=None</em>, <em>meter_args=None</em>, <em>metrics=None</em>, <em>spec=None</em>, <em>mode='by_layer'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/modelutils/modellogger.html#TooledModelLogger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.modelutils.modellogger.TooledModelLogger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Combines a flexlogger and a TooledModel.
+At each step, sends data from TooledModel to Logger.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>{‘plots’:</dt>
+<dd><blockquote class="first">
+<div><dl class="docutils">
+<dt>{‘layer_1’: {‘type’: ‘line’},</dt>
+<dd>‘layer_2’: {‘type’: ‘line’ }},</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>‘meters’:</dt>
+<dd><dl class="first docutils">
+<dt>{‘layer_1_mean’: {‘type’: ‘AverageValueMeter’, ‘target’: ‘layer_1’,</dt>
+<dd>‘layer_1_std’ : {‘type’: ‘AverageValueMeter’, ‘target’: ‘layer_1’,
+‘layer_2_mean’: {‘type’: ‘AverageValueMeter’, ‘target’: ‘layer_2’,
+‘layer_2_std’ : {‘type’: ‘AverageValueMeter’, ‘target’: ‘layer_2’},</dd>
+</dl>
+<p class="last">}</p>
+</dd>
+</dl>
+<p class="last">}</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>Attribs:</p>
+<dl class="docutils">
+<dt>_tm_to_logger: index of TooledModel storages to paths in logger plot space.</dt>
+<dd><dl class="first last docutils">
+<dt>{‘layer_0_grad_out_mean’: [‘0’, ‘grad_out’, ‘mean’],</dt>
+<dd>‘layer_0_weights_std’: [‘0’, ‘weights’, ‘std’],
+‘layer_2_weights_mean’: [‘2’, ‘weights’, ‘mean’]})</dd>
+</dl>
+</dd>
+</dl>
+<p>Usage:</p>
+<p>model = nn.Sequential(nn.Linear(20, 10), nn.Linear(10, 3))
+TM = ToolingLogger(model)</p>
+<dl class="method">
+<dt id="pytorchart.modelutils.modellogger.TooledModelLogger.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>update_dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/modelutils/modellogger.html#TooledModelLogger.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.modelutils.modellogger.TooledModelLogger.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.modelutils.modellogger.TooledModelLogger.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/modelutils/modellogger.html#TooledModelLogger.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.modelutils.modellogger.TooledModelLogger.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.modelutils.modellogger.TooledModelLogger.generete_custom_plot">
+<code class="descname">generete_custom_plot</code><span class="sig-paren">(</span><em>data_dict</em>, <em>plots</em>, <em>meters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/modelutils/modellogger.html#TooledModelLogger.generete_custom_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.modelutils.modellogger.TooledModelLogger.generete_custom_plot" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data_dict</strong> – </li>
+<li><strong>plots</strong> – </li>
+<li><strong>meters</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.modelutils.modellogger.TooledModelLogger.get_dict">
+<code class="descname">get_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/modelutils/modellogger.html#TooledModelLogger.get_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.modelutils.modellogger.TooledModelLogger.get_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.modelutils.modellogger.TooledModelLogger.get_handles">
+<code class="descname">get_handles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/modelutils/modellogger.html#TooledModelLogger.get_handles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.modelutils.modellogger.TooledModelLogger.get_handles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.modelutils.modellogger.TooledModelLogger.log">
+<code class="descname">log</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/modelutils/modellogger.html#TooledModelLogger.log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.modelutils.modellogger.TooledModelLogger.log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.modelutils.modellogger.TooledModelLogger.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/modelutils/modellogger.html#TooledModelLogger.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.modelutils.modellogger.TooledModelLogger.reset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.modelutils.modellogger.TooledModelLogger.step">
+<code class="descname">step</code><span class="sig-paren">(</span><em>X=None</em>, <em>log=False</em>, <em>keys=None</em>, <em>reset=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/modelutils/modellogger.html#TooledModelLogger.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.modelutils.modellogger.TooledModelLogger.step" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> – </li>
+<li><strong>log</strong> – </li>
+<li><strong>keys</strong> – </li>
+<li><strong>reset</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.modelutils.modellogger.TooledModelLogger.table">
+<code class="descname">table</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/modelutils/modellogger.html#TooledModelLogger.table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.modelutils.modellogger.TooledModelLogger.table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pytorchart.modelutils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pytorchart.modelutils" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pytorchart.modelutils package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pytorchart.modelutils.modellogger">pytorchart.modelutils.modellogger module</a></li>
+<li><a class="reference internal" href="#module-pytorchart.modelutils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/source/pytorchart.modelutils.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, psavine.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/source/pytorchart.modelutils.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
