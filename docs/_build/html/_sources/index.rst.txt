@@ -8,8 +8,10 @@ Welcome to pytorchart's documentation!
 
 .. toctree::
    :maxdepth: 1
+   :caption:  Reference
 
-   Loggers <source/pytorchart.Loggers.rst>
+   source/pytorchart
+   source/pytorchart.Loggers
    flexilogger <source/pytorchart.rst>
    tooledmodel <source/pytorchart.rst>
    moremeters <source/pytorchart.moremeters.rst>

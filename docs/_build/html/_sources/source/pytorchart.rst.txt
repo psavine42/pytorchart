@@ -16,6 +16,10 @@ pytorchart.flexilogger module
     :undoc-members:
 
 
+.. autoclass:: pytorchart.flexilogger.FlexLogger
+    :members:
+    :undoc-members:
+
 pytorchart.tooledmodel module
 -----------------------------
 

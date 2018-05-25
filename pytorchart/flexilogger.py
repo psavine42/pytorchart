@@ -253,18 +253,6 @@ class FlexLogger:
             if meter is not None:
                 meter.reset()
 
-    def remove_configs(self, *keys):
-        """
-
-        :param keys:
-        :return:
-        """
-        for k in keys:
-            self._meters.pop(k, None)
-            self._plots.pop(k, None)
-            self._plot_to_meter.pop(k, None)
-            self._meter_to_plot.pop(k, None)
-
     def value(self, keys=None):
         """
 
@@ -330,6 +318,7 @@ class FlexLogger:
         """
         Factory method to generate a logger from some preconfigured keys.
         see presets.preconfigured.Config for details
+
         :param args:
         :param phases:
         :return: instance of Flexilogger
@@ -418,6 +407,9 @@ class FlexLogger:
                 st = _show_meter(st, m)
         return st
 
+    def __add__(self, other):
+        return self
+
     def __len__(self):
         return len(self._meter_to_plot)
 
@@ -426,6 +418,7 @@ class FlexLogger:
 
     def __repr__(self):
         return self.show(meta=False)
+
 
     # def get_plot_names(self):
     #     """
@@ -455,6 +448,18 @@ class FlexLogger:
     #     :return:
     #     """
     #     return self._plot_to_meter.get(plot_key, [])
+    #
+    # def remove_configs(self, *keys):
+    #     """
+    #
+    #     :param keys:
+    #     :return:
+    #     """
+    #     for k in keys:
+    #         self._meters.pop(k, None)
+    #         self._plots.pop(k, None)
+    #         self._plot_to_meter.pop(k, None)
+    #         self._meter_to_plot.pop(k, None)
 
 
 
