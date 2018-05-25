@@ -23,7 +23,7 @@ setup_info = dict(
     packages=find_packages(exclude=('test', 'imgs')),
     zip_safe=True,
     install_requires=[
-        'pytorch',
+        'torch',
         'six',
         'visdom',
         # 'torchnet'

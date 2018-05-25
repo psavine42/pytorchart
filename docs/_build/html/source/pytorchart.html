@@ -85,8 +85,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pytorchart.Loggers.html">pytorchart.Loggers package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pytorchart.moremeters.html">pytorchart.moremeters package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pytorchart.presets.html">pytorchart.presets package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#flexlogger-module">FlexLogger module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pytorchart.tooledmodel">pytorchart.tooledmodel module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pytorchart.flexilogger">FlexLogger module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pytorchart.Loggers.html">pytorchart.Loggers package</a></li>
@@ -95,16 +94,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pytorchart.Loggers.html">pytorchart.Loggers package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pytorchart.moremeters.html">pytorchart.moremeters package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pytorchart.presets.html">pytorchart.presets package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#flexlogger-module">FlexLogger module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pytorchart.tooledmodel">pytorchart.tooledmodel module</a></li>
-</ul>
-</li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">tooledmodel</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pytorchart.Loggers.html">pytorchart.Loggers package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pytorchart.moremeters.html">pytorchart.moremeters package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pytorchart.presets.html">pytorchart.presets package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#flexlogger-module">FlexLogger module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pytorchart.tooledmodel">pytorchart.tooledmodel module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pytorchart.flexilogger">FlexLogger module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pytorchart.moremeters.html">moremeters</a></li>
@@ -175,6 +165,7 @@
             
   <div class="section" id="pytorchart-package">
 <h1>pytorchart package<a class="headerlink" href="#pytorchart-package" title="Permalink to this headline">¶</a></h1>
+<p># .. include:: ../../README.md</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pytorchart.Loggers.html">pytorchart.Loggers package</a><ul>
@@ -196,8 +187,9 @@
 </li>
 </ul>
 </div>
-<div class="section" id="flexlogger-module">
-<h2>FlexLogger module<a class="headerlink" href="#flexlogger-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pytorchart.flexilogger">
+<span id="flexlogger-module"></span><h2>FlexLogger module<a class="headerlink" href="#module-pytorchart.flexilogger" title="Permalink to this headline">¶</a></h2>
+<p>Module for the FlexLogger Class</p>
 <dl class="class">
 <dt id="pytorchart.flexilogger.FlexLogger">
 <em class="property">class </em><code class="descclassname">pytorchart.flexilogger.</code><code class="descname">FlexLogger</code><span class="sig-paren">(</span><em>plot_args</em>, <em>meter_args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger" title="Permalink to this definition">¶</a></dt>
@@ -484,10 +476,7 @@ for charts and meters.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-pytorchart.tooledmodel">
-<span id="pytorchart-tooledmodel-module"></span><h2>pytorchart.tooledmodel module<a class="headerlink" href="#module-pytorchart.tooledmodel" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<span class="target" id="module-pytorchart.tooledmodel"></span><dl class="class">
 <dt id="pytorchart.tooledmodel.FlexTooledModel">
 <em class="property">class </em><code class="descclassname">pytorchart.tooledmodel.</code><code class="descname">FlexTooledModel</code><span class="sig-paren">(</span><em>plot_args</em>, <em>metrics</em>, <em>model=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/tooledmodel.html#FlexTooledModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.tooledmodel.FlexTooledModel" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
@@ -536,6 +525,77 @@ TM = TooledModel(model, spec=my_spec)</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-pytorchart.Loggers.tracelogger"></span><dl class="class">
+<dt id="pytorchart.Loggers.tracelogger.TraceLogger">
+<em class="property">class </em><code class="descclassname">pytorchart.Loggers.tracelogger.</code><code class="descname">TraceLogger</code><span class="sig-paren">(</span><em>*args</em>, <em>opts={}</em>, <em>vis=None</em>, <em>legend=[]</em>, <em>env=None</em>, <em>port=8097</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/Loggers/tracelogger.html#TraceLogger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.Loggers.tracelogger.TraceLogger" title="Permalink to this definition">¶</a></dt>
+<dd><p>TraceLogger has the same idea as tnt.VisdomLogger, but with more access to
+plotly properties directly, with the downside of being less flexible. Also,
+it bypasses the visdom.scatter interface, and directly sends json data,
+so a few things which are rather difficult to do like specifing lines with
+a certain color and line style.</p>
+<p>Though this is not meant to be used directly, it can be by all means:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Examples:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pytorchart.Loggers.tracelogger.TraceLogger.log">
+<code class="descname">log</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/Loggers/tracelogger.html#TraceLogger.log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.Loggers.tracelogger.TraceLogger.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same interface as torchnet.log(), applies metadata to the X,Y Values,
+and sends them to the visdom plot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> – list of integers - X-axis values of size self.num_lines</li>
+<li><strong>Y</strong> – list of integers - X-axis values of size self.num_lines</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pytorchart.Loggers.tracelogger.TraceLogger.save">
+<code class="descname">save</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/Loggers/tracelogger.html#TraceLogger.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.Loggers.tracelogger.TraceLogger.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>saves self, and saves the visdom enviornment.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – valid filepath</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pytorchart.Loggers.tracelogger.TraceLogger.viz">
+<code class="descname">viz</code><a class="headerlink" href="#pytorchart.Loggers.tracelogger.TraceLogger.viz" title="Permalink to this definition">¶</a></dt>
+<dd><p>retrieves the Visdom Object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">visom.Visdom Object</td>
 </tr>
 </tbody>
 </table>

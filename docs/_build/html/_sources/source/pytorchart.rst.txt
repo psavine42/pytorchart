@@ -1,5 +1,7 @@
 pytorchart package
 ==================
+# .. include:: ../../README.md
+
 
 .. toctree::
 
@@ -11,15 +13,16 @@ pytorchart package
 FlexLogger module
 -----------------------------
 
-.. autoclass:: pytorchart.flexilogger.FlexLogger
+.. automodule:: pytorchart.flexilogger
     :members:
     :undoc-members:
-
-
-pytorchart.tooledmodel module
------------------------------
 
 .. automodule:: pytorchart.tooledmodel
     :members:
     :undoc-members:
+
+.. automodule:: pytorchart.Loggers.tracelogger
+    :members:
+    :undoc-members:
+
 
