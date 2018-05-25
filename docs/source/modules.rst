@@ -4,4 +4,6 @@ pytorchart
 .. toctree::
    :maxdepth: 4
 
-   pytorchart
+    readme
+    changelog
+    pytorchart

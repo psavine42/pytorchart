@@ -1,43 +1,155 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pytorchart.flexilogger &#8212; pytorchart  documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pytorchart.flexilogger &mdash; pytorchart 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <div class="wy-grid-for-nav">
 
-  </head><body>
-  
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+          
+            <a href="../../index.html" class="icon icon-home"> pytorchart
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pytorchart</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pytorchart.flexilogger</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <h1>Source code for pytorchart.flexilogger</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">pickle</span><span class="o">,</span> <span class="nn">visdom</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module for the FlexLogger Class</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">pickle</span><span class="o">,</span> <span class="nn">visdom</span>
 <span class="kn">from</span> <span class="nn">inspect</span> <span class="k">import</span> <span class="n">signature</span>
 <span class="kn">from</span> <span class="nn">torchnet</span> <span class="k">import</span> <span class="n">meter</span> <span class="k">as</span> <span class="n">METERS</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">.meter_doc</span> <span class="k">import</span> <span class="n">meter_defs</span>
 <span class="kn">from</span> <span class="nn">.Loggers</span> <span class="k">import</span> <span class="n">TraceLogger</span>
-<span class="c1"># import presets</span>
-
 <span class="kn">import</span> <span class="nn">torch</span><span class="o">,</span> <span class="nn">pprint</span>
 
 
@@ -46,7 +158,6 @@
 <span class="n">_loggers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;heatmap&#39;</span>
             <span class="c1"># image</span>
             <span class="p">]</span>
-<span class="c1">#  = [&#39;train&#39;, &#39;valid&#39;, &#39;test&#39;]</span>
 
 
 <div class="viewcode-block" id="FlexLogger"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger">[docs]</a><span class="k">class</span> <span class="nc">FlexLogger</span><span class="p">:</span>
@@ -125,8 +236,9 @@
     <span class="k">def</span> <span class="nf">_add_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        create visdom Plot and add to dictionary</span>
-<span class="sd">        :param name:</span>
-<span class="sd">        :param args:</span>
+
+<span class="sd">        :param name: (str) name of plot</span>
+<span class="sd">        :param args: (dict) options for plot</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">plot_type</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -176,6 +288,7 @@
 
 <div class="viewcode-block" id="FlexLogger.add"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{}):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a dictitionary of values to meters.</span>
 
 <span class="sd">        :param kwargs:</span>
 <span class="sd">        :return:</span>
@@ -243,7 +356,7 @@
 <span class="sd">        todo implement lol</span>
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># raise NotImplementedError(&#39;not yet implemented&#39;)</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;not yet implemented&#39;</span><span class="p">)</span></div>
         <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FlexLogger.load"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.load">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -321,8 +434,6 @@
 
 <div class="viewcode-block" id="FlexLogger.add_presets"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.flexilogger.FlexLogger.add_presets">[docs]</a>    <span class="k">def</span> <span class="nf">add_presets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-
-
 
 <span class="sd">        :param args:</span>
 <span class="sd">        :return:</span>
@@ -440,46 +551,62 @@
 
 </pre></div>
 
+           </div>
+           
           </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, pavel savine.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2018, psavine.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-    </div>
 
-    
+    </section>
 
-    
-  </body>
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>

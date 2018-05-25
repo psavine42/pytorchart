@@ -1,5 +1,5 @@
 .. pytorchart documentation master file, created by
-   sphinx-quickstart on Thu May 24 17:37:08 2018.
+   sphinx-quickstart on Thu May 24 21:57:22 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -10,6 +10,9 @@ Welcome to pytorchart's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   readme
+   changelog
+   pytorchart
 
 
 Indices and tables

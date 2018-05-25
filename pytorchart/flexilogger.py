@@ -94,8 +94,9 @@ class FlexLogger:
     def _add_plot(self, name, args):
         """
         create visdom Plot and add to dictionary
-        :param name:
-        :param args:
+
+        :param name: (str) name of plot
+        :param args: (dict) options for plot
         :return:
         """
         plot_type = args.pop('type', None)

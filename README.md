@@ -1,6 +1,4 @@
-# PyTorch FlexiLogger
-
-**NOTE: VERY WORK IN PROGRESS**
+# PyTorchChart
 
 A utility for visdom metering and logging built on top of TNT, and some utlities for recording model status during training.
 The idea is to provide a declarative way to generate meters and loggers with a clean api. 
@@ -11,12 +9,8 @@ Or maybe it would be good to just have some common debugging things, and have a 
 readily available.
 Anyway, the meters and loggers are contained in a single object, which is updated by dictionaries of values. 
 
-### Considerations 
 
-If you are not a fan of dictionaries for your data during expirements, this may not be for you.
-I tend to like not redoing my logging creation functions for every expriment, so I decided to consolidate these.
-If you like tnt's MeterLogger, but also like logging random things like histograms of your weights, this may be for you.
-
+[Documentation](https://pytorchart.readthedocs.io/)
 
 ## Examples
 
@@ -143,6 +137,14 @@ Results in:
 
 See examples file for mnist example, and the unittests for options on plot inits. Really I think my goal is to have these config files
 for common tasks that work across all my models (like tensorboard, but with control over enviornments and customization )
+
+
+### Considerations 
+
+If you are not a fan of dictionaries for your data during expirements, this may not be for you.
+I tend to like not redoing my logging creation functions for every expriment, so I decided to consolidate these.
+If you like tnt's MeterLogger, but also like logging random things like histograms of your weights, this may be for you.
+
 
 ### Misc Notes
 There are also some utilities that I wrote down one time to remind myself what the plot and meter types are and the shapes of the inputs they take.
