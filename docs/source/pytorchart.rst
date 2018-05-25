@@ -1,28 +1,23 @@
-pytorchart package
+FlexLoggers module
 ==================
-# .. include:: ../../README.md
-
 
 .. toctree::
-
-    pytorchart.Loggers
-    pytorchart.moremeters
-    pytorchart.presets
+   :maxdepth: 1
 
 
-FlexLogger module
+FlexLogger
 -----------------------------
 
 .. automodule:: pytorchart.flexilogger
     :members:
     :undoc-members:
 
+ModelLogger
+-----------------------------
+
 .. automodule:: pytorchart.tooledmodel
     :members:
     :undoc-members:
 
-.. automodule:: pytorchart.Loggers.tracelogger
-    :members:
-    :undoc-members:
 
 

@@ -9,9 +9,10 @@ Or maybe it would be good to just have some common debugging things, and have a 
 readily available.
 Anyway, the meters and loggers are contained in a single object, which is updated by dictionaries of values. 
 
-
-[Documentation](https://pytorchart.readthedocs.io/)
-
+  -[Documentation](https://pytorchart.readthedocs.io/)
+  
+  -[Mnist Example](https://github.com/psavine42/pytorchart/blob/master/example/mnistmodel.py)
+  
 ## Examples
 
 ### Logger

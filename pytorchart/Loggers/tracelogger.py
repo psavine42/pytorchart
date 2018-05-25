@@ -2,13 +2,15 @@ from visdom import Visdom
 from .style_utils import _def_opts, _def_layout, _spec, lyout_spec
 import pickle, math, pprint
 from ..utils import deep_merge
-
+from .base import BaseLogger
 
 _nan = float('NaN')
 
 
-class TraceLogger(object):
+class TraceLogger(BaseLogger):
     """
+    Logging arbitrary data by keys at runtime to a metering operation.
+
     TraceLogger has the same idea as tnt.VisdomLogger, but with more access to
     plotly properties directly, with the downside of being less flexible. Also,
     it bypasses the visdom.scatter interface, and directly sends json data,
@@ -29,6 +31,7 @@ class TraceLogger(object):
                  env=None,
                  port=8097,
                  **kwargs):
+        super(TraceLogger, self).__init__()
         self._legend = legend
         self._port  = port
         self._win   = None
@@ -61,7 +64,7 @@ class TraceLogger(object):
         :param path: valid filepath
         :return: None
         """
-        pickle.dump(self, path)
+        super(BaseLogger, self).save(path)
         return self._viz.save([self._env])
 
     @classmethod

@@ -79,12 +79,10 @@
             
               <p class="caption"><span class="caption-text">Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../source/pytorchart.html">pytorchart package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../source/pytorchart.Loggers.html">pytorchart.Loggers package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../source/modules.html">pytorchart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../source/pytorchart.html">flexilogger</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../source/pytorchart.moremeters.html">moremeters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../source/pytorchart.presets.html">presets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/pytorchart.html">Creating Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/pytorchart.Loggers.html">Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/pytorchart.moremeters.html">More Meters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/pytorchart.presets.html">Presets</a></li>
 </ul>
 
             
@@ -171,6 +169,22 @@
 
 <div class="viewcode-block" id="FlexTooledModel"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.tooledmodel.FlexTooledModel">[docs]</a><span class="k">class</span> <span class="nc">FlexTooledModel</span><span class="p">(</span><span class="n">FlexLogger</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logging a nn.Module values to a Flexlogger by adding hooks.</span>
+
+<span class="sd">    nn.Modules natively give a forward and backward hook, which</span>
+<span class="sd">    have a function signature of</span>
+
+<span class="sd">    forward_hook(module, input, output) -&gt; None</span>
+
+<span class="sd">    backward_hook(module, grad_in, grad_out) -&gt; grad</span>
+
+<span class="sd">    This module will</span>
+<span class="sd">      - take a set of specifications for such functions,</span>
+<span class="sd">      - create hooks for them to nn.Module</span>
+<span class="sd">      - connect the hooks to meters, and updated without the FlexLogger(data=xx) calls.</span>
+<span class="sd">      - meters will per normal when using the FlexLogger.log()</span>
+
+<span class="sd">    Example:</span>
 
 
 
@@ -223,8 +237,6 @@
             <span class="k">return</span> <span class="n">x</span>
 
         <span class="n">direction</span><span class="p">,</span> <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_datasource_index</span><span class="p">(</span><span class="n">datasource</span><span class="p">)</span>
-        <span class="c1"># create function for args</span>
-        <span class="c1"># module.weight</span>
 
         <span class="k">def</span> <span class="nf">hook_part</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
             <span class="n">arg</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
@@ -278,7 +290,7 @@
 <div class="viewcode-block" id="FlexTooledModel.generate_model_dict"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.tooledmodel.FlexTooledModel.generate_model_dict">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">generate_model_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">meter_args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        turn a bunch of dictionaries into</span>
+<span class="sd">        turn a bunch of dictionaries</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dicts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_modules</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
@@ -299,15 +311,17 @@
 
 <div class="viewcode-block" id="FlexTooledModel.register_model"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.tooledmodel.FlexTooledModel.register_model">[docs]</a>    <span class="k">def</span> <span class="nf">register_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">step_on_first</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Registers a model to its hook functions. The hooks specs must</span>
+<span class="sd">        already be registered in self</span>
 
-<span class="sd">        :param model:</span>
+<span class="sd">        :param model: nn.Module -</span>
 <span class="sd">        :return:</span>
 
 <span class="sd">        Usage:</span>
 <span class="sd">            my_spec = { 0:{&#39;grad_out&#39;: [torch.mean], &#39;weights&#39;: [torch.std]}}</span>
 
 <span class="sd">            model =  nn.Sequential(nn.Linear(20, 10), nn.Linear(10, 3))</span>
-<span class="sd">            TM = TooledModel(model, spec=my_spec)</span>
+<span class="sd">            TM = FlexTooledModel(model, spec=my_spec)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_modules</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
@@ -327,17 +341,25 @@
 
 <div class="viewcode-block" id="FlexTooledModel.remove_hooks"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.tooledmodel.FlexTooledModel.remove_hooks">[docs]</a>    <span class="k">def</span> <span class="nf">remove_hooks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dereferences all hooks from pytorch nn.Module</span>
 
-<span class="sd">        :return:</span>
+<span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">handle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handles</span><span class="p">:</span></div>
             <span class="n">handle</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
 
 <div class="viewcode-block" id="FlexTooledModel.clear"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.tooledmodel.FlexTooledModel.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remove_hooks</span><span class="p">()</span></div>
         <span class="bp">self</span><span class="o">.</span><span class="n">_handles</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="FlexTooledModel.get_handles"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.tooledmodel.FlexTooledModel.get_handles">[docs]</a>    <span class="k">def</span> <span class="nf">get_handles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div></div>
+<div class="viewcode-block" id="FlexTooledModel.get_handles"><a class="viewcode-back" href="../../source/pytorchart.html#pytorchart.tooledmodel.FlexTooledModel.get_handles">[docs]</a>    <span class="k">def</span> <span class="nf">get_handles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span></div></div>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handles</span>
 
 </pre></div>

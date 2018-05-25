@@ -1,13 +1,12 @@
-pytorchart.Loggers package
+Loggers package
 ==========================
 
-pytorchart.Loggers.tracelogger
+TraceLogger Class
 -------------------------------------
 
 .. automodule:: pytorchart.Loggers.tracelogger
     :members:
     :undoc-members:
-
 
 
 

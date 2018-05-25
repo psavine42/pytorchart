@@ -21,6 +21,22 @@ _default_hooks = [torch.mean, torch.std]
 
 class FlexTooledModel(FlexLogger):
     """
+    Logging a nn.Module values to a Flexlogger by adding hooks.
+
+    nn.Modules natively give a forward and backward hook, which
+    have a function signature of
+
+    forward_hook(module, input, output) -> None
+
+    backward_hook(module, grad_in, grad_out) -> grad
+
+    This module will
+      - take a set of specifications for such functions,
+      - create hooks for them to nn.Module
+      - connect the hooks to meters, and updated without the FlexLogger(data=xx) calls.
+      - meters will per normal when using the FlexLogger.log()
+
+    Example:
 
 
 
@@ -73,8 +89,6 @@ class FlexTooledModel(FlexLogger):
             return x
 
         direction, idx = self._get_datasource_index(datasource)
-        # create function for args
-        # module.weight
 
         def hook_part(*args):
             arg = args[idx]
@@ -128,7 +142,7 @@ class FlexTooledModel(FlexLogger):
     @classmethod
     def generate_model_dict(cls, model, meter_args, **kwargs):
         """
-        turn a bunch of dictionaries into
+        turn a bunch of dictionaries
         """
         dicts = []
         for layer_name, module in list(model._modules.items()):
@@ -149,15 +163,17 @@ class FlexTooledModel(FlexLogger):
 
     def register_model(self, model, step_on_first=True):
         """
+        Registers a model to its hook functions. The hooks specs must
+        already be registered in self
 
-        :param model:
+        :param model: nn.Module -
         :return:
 
         Usage:
             my_spec = { 0:{'grad_out': [torch.mean], 'weights': [torch.std]}}
 
             model =  nn.Sequential(nn.Linear(20, 10), nn.Linear(10, 3))
-            TM = TooledModel(model, spec=my_spec)
+            TM = FlexTooledModel(model, spec=my_spec)
 
         """
         for layer_name, module in list(model._modules.items()):
@@ -177,16 +193,24 @@ class FlexTooledModel(FlexLogger):
 
     def remove_hooks(self):
         """
+        Dereferences all hooks from pytorch nn.Module
 
-        :return:
+        :return: None
         """
         for handle in self._handles:
             handle.remove()
 
     def clear(self):
+        """
+
+        :return:
+        """
         self.remove_hooks()
         self._handles = []
 
     def get_handles(self):
+        """
+
+        """
         return self._handles
 

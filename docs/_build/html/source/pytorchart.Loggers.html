@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pytorchart.Loggers package &mdash; pytorchart 0.0.1 documentation</title>
+  <title>Loggers package &mdash; pytorchart 0.0.1 documentation</title>
   
 
   
@@ -29,8 +29,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pytorchart package" href="pytorchart.html" />
-    <link rel="prev" title="Welcome to pytorchart’s documentation!" href="../index.html" /> 
+    <link rel="next" title="pytorchart.moremeters package" href="pytorchart.moremeters.html" />
+    <link rel="prev" title="pytorchart package" href="pytorchart.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -79,16 +79,15 @@
               
             
             
-              <p class="caption"><span class="caption-text">Package Reference</span></p>
+              <p class="caption"><span class="caption-text">Reference</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Loggers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-pytorchart.Loggers.tracelogger">pytorchart.Loggers.tracelogger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pytorchart.html">Creating Data</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Plotting Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-pytorchart.Loggers.tracelogger">TraceLogger Class</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="pytorchart.html">flexilogger</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pytorchart.html">tooledmodel</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pytorchart.moremeters.html">moremeters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pytorchart.presets.html">presets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pytorchart.moremeters.html">More Meters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pytorchart.presets.html">Presets</a></li>
 </ul>
 
             
@@ -134,7 +133,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>pytorchart.Loggers package</li>
+      <li>Loggers package</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -153,14 +152,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="pytorchart-loggers-package">
-<h1>pytorchart.Loggers package<a class="headerlink" href="#pytorchart-loggers-package" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="loggers-package">
+<h1>Loggers package<a class="headerlink" href="#loggers-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-pytorchart.Loggers.tracelogger">
-<span id="pytorchart-loggers-tracelogger"></span><h2>pytorchart.Loggers.tracelogger<a class="headerlink" href="#module-pytorchart.Loggers.tracelogger" title="Permalink to this headline">¶</a></h2>
+<span id="tracelogger-class"></span><h2>TraceLogger Class<a class="headerlink" href="#module-pytorchart.Loggers.tracelogger" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pytorchart.Loggers.tracelogger.TraceLogger">
 <em class="property">class </em><code class="descclassname">pytorchart.Loggers.tracelogger.</code><code class="descname">TraceLogger</code><span class="sig-paren">(</span><em>*args</em>, <em>opts={}</em>, <em>vis=None</em>, <em>legend=[]</em>, <em>env=None</em>, <em>port=8097</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/Loggers/tracelogger.html#TraceLogger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.Loggers.tracelogger.TraceLogger" title="Permalink to this definition">¶</a></dt>
-<dd><p>TraceLogger has the same idea as tnt.VisdomLogger, but with more access to
+<dd><p>Logging arbitrary data by keys at runtime to a metering operation.</p>
+<p>TraceLogger has the same idea as tnt.VisdomLogger, but with more access to
 plotly properties directly, with the downside of being less flexible. Also,
 it bypasses the visdom.scatter interface, and directly sends json data,
 so a few things which are rather difficult to do like specifing lines with
@@ -239,10 +239,10 @@ and sends them to the visdom plot.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="pytorchart.html" class="btn btn-neutral float-right" title="pytorchart package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="pytorchart.moremeters.html" class="btn btn-neutral float-right" title="pytorchart.moremeters package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../index.html" class="btn btn-neutral" title="Welcome to pytorchart’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="pytorchart.html" class="btn btn-neutral" title="pytorchart package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

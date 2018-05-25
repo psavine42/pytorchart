@@ -17,8 +17,6 @@ pytorchart.moremeters.image\_meter module
     :members:
     :undoc-members:
 
-
-
 Module contents
 ---------------
 

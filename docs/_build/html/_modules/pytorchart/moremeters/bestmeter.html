@@ -79,12 +79,10 @@
             
               <p class="caption"><span class="caption-text">Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/pytorchart.html">pytorchart package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/pytorchart.Loggers.html">pytorchart.Loggers package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/modules.html">pytorchart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/pytorchart.html">flexilogger</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/pytorchart.moremeters.html">moremeters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/pytorchart.presets.html">presets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/pytorchart.html">Creating Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/pytorchart.Loggers.html">Plotting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/pytorchart.moremeters.html">More Meters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/pytorchart.presets.html">Presets</a></li>
 </ul>
 
             
@@ -151,6 +149,16 @@
 <span></span>
 
 <div class="viewcode-block" id="BestValueMeter"><a class="viewcode-back" href="../../../source/pytorchart.moremeters.html#pytorchart.moremeters.bestmeter.BestValueMeter">[docs]</a><span class="k">class</span> <span class="nc">BestValueMeter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Keep track of best value for a metric.</span>
+<span class="sd">    Compares metrics and discards wrose value</span>
+
+<span class="sd">    :options:</span>
+<span class="sd">      -if top=True, then max(new, current) is kept</span>
+<span class="sd">      -if top=False, then min(new, current) is kept</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_top</span> <span class="o">=</span> <span class="n">top</span>

@@ -1,6 +1,16 @@
 
 
 class BestValueMeter(object):
+    """
+    Keep track of best value for a metric.
+    Compares metrics and discards wrose value
+
+    :options:
+      -if top=True, then max(new, current) is kept
+      -if top=False, then min(new, current) is kept
+
+
+    """
     def __init__(self, metric=None, top=True):
         self.reset()
         self._top = top

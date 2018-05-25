@@ -8,15 +8,12 @@ Welcome to pytorchart's documentation!
 
 .. toctree::
    :maxdepth: 1
-   :caption:  Reference
+   :caption: Reference
 
-   source/pytorchart
-   source/pytorchart.Loggers
-   source/modules
-   flexilogger <source/pytorchart.rst>
-   moremeters <source/pytorchart.moremeters.rst>
-   presets <source/pytorchart.presets.rst>
-
+   Creating Data <source/pytorchart.rst>
+   Plotting Data <source/pytorchart.Loggers.rst>
+   More Meters <source/pytorchart.moremeters.rst>
+   Presets <source/pytorchart.presets.rst>
 
 Indices and tables
 ==================
