@@ -10,11 +10,11 @@ long_description = "an abstraction for logging neural network expirements"
 
 setup_info = dict(
     # Metadata
-    name='FlexiLogger',
+    name='pytorchart',
     version=VERSION,
     author='Pavel Savine',
     author_email='psavine42@gmail.com',
-    url='https://github.com/psavine42/flexilogger',
+    url='https://github.com/psavine42/pytorchart',
     description=long_description,
     long_description=long_description,
     license='BSD',
@@ -23,10 +23,10 @@ setup_info = dict(
     packages=find_packages(exclude=('test', 'imgs')),
     zip_safe=True,
     install_requires=[
-        'torch',
+        'pytorch',
         'six',
         'visdom',
-        'torchnet'
+        # 'torchnet'
     ]
 )
 
