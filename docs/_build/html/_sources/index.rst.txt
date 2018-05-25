@@ -12,6 +12,8 @@ Welcome to pytorchart's documentation!
    Loggers <source/pytorchart.Loggers.rst>
    flexilogger <source/pytorchart.rst>
    tooledmodel <source/pytorchart.rst>
+   moremeters <source/pytorchart.moremeters.rst>
+   presets <source/pytorchart.presets.rst>
 
 
 Indices and tables

@@ -8,6 +8,19 @@ _nan = float('NaN')
 
 
 class TraceLogger(object):
+    """
+    TraceLogger has the same idea as tnt.VisdomLogger, but with more access to
+    plotly properties directly, with the downside of being less flexible. Also,
+    it bypasses the visdom.scatter interface, and directly sends json data,
+    so a few things which are rather difficult to do like specifing lines with
+    a certain color and line style.
+
+    Though this is not meant to be used directly, it can be by all means:
+
+    :Examples:
+
+
+    """
     def __init__(self,
                  *args,
                  opts={},
@@ -25,7 +38,7 @@ class TraceLogger(object):
         self._layout = deep_merge(_def_layout, opts.get('layout', {}))
         self._layout['title'] = opts.get('title', '').capitalize()
 
-        self._lines  = self.init_lines(legend, opts.get('data', {}))
+        self._lines  = self._init_lines(legend, opts.get('data', {}))
         self._viz    = vis if isinstance(vis, Visdom) else Visdom(port=port)
         self._traces = [0] * len(self._lines)
         self._debug = kwargs.get('debug', False)
@@ -34,14 +47,25 @@ class TraceLogger(object):
 
     @property
     def viz(self):
+        """
+        retrieves the Visdom Object
+
+        :return: visom.Visdom Object
+        """
         return self._viz
 
     def save(self, path):
+        """
+        saves self, and saves the visdom enviornment.
+
+        :param path: valid filepath
+        :return: None
+        """
         pickle.dump(self, path)
         return self._viz.save([self._env])
 
     @classmethod
-    def check_trace(cls, opts, pre='', mp_spec=_spec):
+    def _check_trace(cls, opts, pre='', mp_spec=_spec):
         """
 
         :param opts:
@@ -53,7 +77,7 @@ class TraceLogger(object):
         for k, value in opts.items():
             fk = k if pre == '' else pre + '.' + k
             if isinstance(value, dict):
-                _opts[k] = cls.check_trace(value, fk)
+                _opts[k] = cls._check_trace(value, fk)
             else:
                 spec = mp_spec.get(fk, None)
                 if isinstance(spec, list) and value in spec:
@@ -63,14 +87,14 @@ class TraceLogger(object):
         return _opts
 
     @classmethod
-    def init_lines(cls, titles, opts):
+    def _init_lines(cls, titles, opts):
         """
 
         :param titles:
         :param opts:
         :return:
 
-        otps usage :
+        Usage :
              {'line1':{
                 'name': '1',
                 'type': 'scatter',
@@ -82,7 +106,7 @@ class TraceLogger(object):
         lines = []
         for title in titles:
             trace_style = opts.get(title, {})
-            opts_dict = cls.check_trace(trace_style, mp_spec=_spec)
+            opts_dict = cls._check_trace(trace_style, mp_spec=_spec)
             # todo required keys
             opts_dict['type'] = 'scatter'
             opts_dict['mode'] = 'lines'
@@ -126,18 +150,20 @@ class TraceLogger(object):
 
     def log(self, X, Y):
         """
+        Same interface as torchnet.log(), applies metadata to the X,Y Values,
+        and sends them to the visdom plot.
 
-        :param X:
-        :param Y:
-        :return:
+        :param X: list of integers - X-axis values of size self.num_lines
+        :param Y: list of integers - X-axis values of size self.num_lines
+        :return: None
         """
         ds = self._create_trace(X, Y)
 
         if self._win is not None and ds is not None:
-            # print(len(ds['data']))
             ds['append'] = True
             ds['win'] = self._win
             self._viz._send(ds, endpoint='update')
+
         elif self._win is None and ds is not None:
             print('starting plot ', self._layout['title'], len(ds['data']), self._legend)
             self._win = self._viz._send(ds, endpoint='events')

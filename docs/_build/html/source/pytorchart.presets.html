@@ -28,7 +28,8 @@
     <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="pytorchart.moremeters package" href="pytorchart.moremeters.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -77,17 +78,20 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">pytorchart.presets package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-pytorchart.presets.functional">pytorchart.presets.functional module</a></li>
-<li><a class="reference internal" href="#module-pytorchart.presets.preconfigured">pytorchart.presets.preconfigured module</a></li>
-<li><a class="reference internal" href="#module-pytorchart.presets">Module contents</a></li>
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pytorchart.Loggers.html">Loggers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pytorchart.html">flexilogger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pytorchart.html">tooledmodel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pytorchart.moremeters.html">moremeters</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">presets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pytorchart.presets.functional">pytorchart.presets.functional module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pytorchart.presets.preconfigured">pytorchart.presets.preconfigured module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pytorchart.presets">Module contents</a></li>
 </ul>
 </li>
 </ul>
-</div>
+
             
           
         </div>
@@ -131,6 +135,8 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
+          <li><a href="pytorchart.html">pytorchart package</a> &raquo;</li>
+        
       <li>pytorchart.presets package</li>
     
     
@@ -161,6 +167,7 @@
 <dt id="pytorchart.presets.functional.LayerLegend">
 <em class="property">class </em><code class="descclassname">pytorchart.presets.functional.</code><code class="descname">LayerLegend</code><a class="reference internal" href="../_modules/pytorchart/presets/functional.html#LayerLegend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.functional.LayerLegend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>keeps track of layers and assigned Colors</p>
 <dl class="method">
 <dt id="pytorchart.presets.functional.LayerLegend.color_for">
 <code class="descname">color_for</code><span class="sig-paren">(</span><em>layer</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/presets/functional.html#LayerLegend.color_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.functional.LayerLegend.color_for" title="Permalink to this definition">¶</a></dt>
@@ -171,29 +178,6 @@
 <code class="descname">register_model</code><span class="sig-paren">(</span><em>model</em>, <em>fn=&lt;function &lt;lambda&gt;&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/presets/functional.html#LayerLegend.register_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.functional.LayerLegend.register_model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</dd></dl>
-
-<dl class="function">
-<dt id="pytorchart.presets.functional.SNR">
-<code class="descclassname">pytorchart.presets.functional.</code><code class="descname">SNR</code><span class="sig-paren">(</span><em>model</em>, <em>colors=None</em>, <em>fn=None</em>, <em>target='plot'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/presets/functional.html#SNR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.functional.SNR" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>model</strong> – </li>
-<li><strong>colors</strong> – a colors object containing layers previously indexed.</li>
-<li><strong>fn</strong> – function for gathering layers</li>
-<li><strong>target</strong> – </li>
-<li><strong>kwargs</strong> – debug</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="function">
@@ -229,11 +213,6 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="pytorchart.presets.functional.get_in">
-<code class="descclassname">pytorchart.presets.functional.</code><code class="descname">get_in</code><span class="sig-paren">(</span><em>o</em>, <em>kys</em>, <em>d=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/presets/functional.html#get_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.functional.get_in" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="pytorchart.presets.functional.grad_mean">
 <code class="descclassname">pytorchart.presets.functional.</code><code class="descname">grad_mean</code><span class="sig-paren">(</span><em>module</em>, <em>grad_in</em>, <em>grad_out</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/presets/functional.html#grad_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.functional.grad_mean" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -259,14 +238,25 @@
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="pytorchart.presets.functional.identity">
-<code class="descclassname">pytorchart.presets.functional.</code><code class="descname">identity</code><span class="sig-paren">(</span><em>*x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/presets/functional.html#identity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.functional.identity" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="pytorchart.presets.functional.summarize">
-<code class="descclassname">pytorchart.presets.functional.</code><code class="descname">summarize</code><span class="sig-paren">(</span><em>model</em>, <em>fn=&lt;function identity&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/presets/functional.html#summarize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.functional.summarize" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">pytorchart.presets.functional.</code><code class="descname">summarize</code><span class="sig-paren">(</span><em>model</em>, <em>fn=&lt;function _identity&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/presets/functional.html#summarize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.functional.summarize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a nn.Module, recursively walk its submodules and apply a function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model</strong> – nn.Module or superclass thereof</li>
+<li><strong>fn</strong> – function to be applied to any module to create a summary</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of summaries generated by fn(module)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 <div class="section" id="module-pytorchart.presets.preconfigured">
@@ -275,30 +265,78 @@
 <dt id="pytorchart.presets.preconfigured.Config">
 <em class="property">class </em><code class="descclassname">pytorchart.presets.preconfigured.</code><code class="descname">Config</code><a class="reference internal" href="../_modules/pytorchart/presets/preconfigured.html#Config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.preconfigured.Config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="classmethod">
-<dt id="pytorchart.presets.preconfigured.Config.build_phases">
-<em class="property">classmethod </em><code class="descname">build_phases</code><span class="sig-paren">(</span><em>k</em>, <em>phases</em>, <em>target=None</em>, <em>c=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/presets/preconfigured.html#Config.build_phases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.preconfigured.Config.build_phases" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<p>Static object for generating meter and plot configurations</p>
 <dl class="classmethod">
 <dt id="pytorchart.presets.preconfigured.Config.default_cfg">
 <em class="property">classmethod </em><code class="descname">default_cfg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/presets/preconfigured.html#Config.default_cfg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.preconfigured.Config.default_cfg" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>return a the base configuration for plot and meter
+:return: dict</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>Config.default_cfg()</p>
+</dd></dl>
 
 <dl class="classmethod">
 <dt id="pytorchart.presets.preconfigured.Config.gen_plot">
 <em class="property">classmethod </em><code class="descname">gen_plot</code><span class="sig-paren">(</span><em>*keys</em>, <em>phases=None</em>, <em>plot=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/presets/preconfigured.html#Config.gen_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.preconfigured.Config.gen_plot" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="classmethod">
-<dt id="pytorchart.presets.preconfigured.Config.get_meters">
-<em class="property">classmethod </em><code class="descname">get_meters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/presets/preconfigured.html#Config.get_meters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.preconfigured.Config.get_meters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Creates a plot from the specified keys.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>keys</strong> – list of strings</li>
+<li><strong>phases</strong> – list of strings or None. If None, it will use default</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>phases of [‘test’, [‘train’]
+:param plot: name of plot</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple of dicts for plots and meters</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="classmethod">
 <dt id="pytorchart.presets.preconfigured.Config.get_presets">
 <em class="property">classmethod </em><code class="descname">get_presets</code><span class="sig-paren">(</span><em>*keys</em>, <em>phases=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/presets/preconfigured.html#Config.get_presets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.preconfigured.Config.get_presets" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>generate a dictionary of plots and meters given preconfigured keys.
+This will create a meter by key by phase.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>keys</strong> – list of strings</li>
+<li><strong>phases</strong> – list of strings or None. If None, it will use default</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>phases of [‘test’, [‘train’]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple of dicts for plots and meters</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -308,19 +346,18 @@
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="pytorchart.presets.preconfigured.get_preset">
-<code class="descclassname">pytorchart.presets.preconfigured.</code><code class="descname">get_preset</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/presets/preconfigured.html#get_preset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.preconfigured.get_preset" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pytorchart.presets.preconfigured.get_presets">
-<code class="descclassname">pytorchart.presets.preconfigured.</code><code class="descname">get_presets</code><span class="sig-paren">(</span><em>*keys, phases=['train', 'test']</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/presets/preconfigured.html#get_presets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.preconfigured.get_presets" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="pytorchart.presets.preconfigured.preset_names">
 <code class="descclassname">pytorchart.presets.preconfigured.</code><code class="descname">preset_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/presets/preconfigured.html#preset_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.presets.preconfigured.preset_names" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get a list of configured plots</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of strings</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 <div class="section" id="module-pytorchart.presets">
@@ -333,6 +370,13 @@
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="pytorchart.moremeters.html" class="btn btn-neutral" title="pytorchart.moremeters package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

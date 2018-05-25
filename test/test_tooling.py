@@ -2,7 +2,7 @@ import torch
 from torch.autograd import Variable
 import unittest, pprint
 from pytorchart import FlexTooledModel
-from pytorchart.presets.preconfigured import get_preset, get_presets, Config
+from pytorchart.presets.preconfigured import Config
 from pytorchart import functional as Fn
 
 import random
@@ -100,7 +100,7 @@ class TestTools(unittest.TestCase):
     def test_bylayer_plots(self):
         spec = {'0': {'weights': [torch.mean, torch.std], 'grad_out': [torch.mean]},
                 '2': {'weights': [torch.mean], 'grad_out': [torch.mean, torch.std]}}
-        plot_args, meter_args = get_preset('loss+MSE')
+        plot_args, meter_args = Config.get_presets('loss', 'mse')
         self._spec_plus_add(spec, plot_args=plot_args, meter_args=meter_args, mode='by_layer')
 
     def test_custom_plots(self):
@@ -152,10 +152,10 @@ class TestTools(unittest.TestCase):
         plots = {'plt1': {'type': 'line',
                           'opts': {'layout': {'ytype': 'log'}}}}
         model = Net()
-        meters = Fn.SNR(model, target='plt1')
+        meters = Fn.generate_layers(model, targets=['plt1'])
         TM = FlexTooledModel(plots, meters, model, track_step=False)
 
-        plot, meter = get_presets('loss', 'mse')
+        plot, meter = Config.get_presets('loss', 'mse')
         TM.update_config(plot, meter)
         print(str(TM))
 
@@ -172,7 +172,7 @@ class TestTools(unittest.TestCase):
         meters, plots = Fn.generate_layers(model, fn=layer_fn,  targets=['grad_norms', 'snr', ])
         TM = FlexTooledModel(plots, meters, model, track_step=False)
 
-        TM.update_config(*get_presets('mse', 'loss'))
+        TM.update_config(*Config.get_presets('mse', 'loss'))
         # TM.add_metrics_for('loss', 'loss2', plot='loss')
         # print(str(TM))
 
@@ -184,8 +184,8 @@ class TestTools(unittest.TestCase):
         model = Net()
         meters, plots = Fn.generate_layers(model, targets=['grad_norms'])
         TM = FlexTooledModel(plots, meters, model, track_step=False)
-        meters = get_meters('loss', 'mse')
-        TM.update_config(None, meters)
+        # meters = get_meters('loss', 'mse')
+        # TM.update_config(None, meters)
 
 
 

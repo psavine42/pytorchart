@@ -22,21 +22,32 @@ class FlexLogger:
     Base object for logging. It takes some specifications for meters
     and for plots, indexes them, and adds a hook to send data to plots on log.
 
+    :param plot_args: dictionary of definitions for plotters or None.
+    :param meter_args: dictionary of definitions for meters
+    :param kwargs: additional keyword arguments
+
+
     Examples:
 
+    .. code-block:: python
+
+        meters = {
+            'mymetric': {'type': 'AverageValueMeter', 'target': 'misc'}
+            'test_loss': {'type': 'AverageValueMeter', 'target': 'loss'}
+            'train_loss': {'type': 'AverageValueMeter', 'target': 'loss'} # target is the plot key
+        }
+        plots = {'loss': {'type': 'line'}, 'misc': {'type': 'line'}}
+
+        TM = FlexLogger(plots, meters, env='bob') # initializes plots with meters to visdom env 'bob'
+
+        # sample expirement step - for more see unittests
+        TM(mymetric=69, test_loss=0.94)
+        TM.step()
+
+        TM.log(reset=True) # log and reset
 
     """
     def __init__(self, plot_args, meter_args, **kwargs):
-        """
-
-        :param plot_args: dictionary of definitions for plotters
-        :param meter_args: dictionary of definitions for meters
-        :param meter_args: dictionary of definitions for meters
-        :Attributes:
-            _meters:
-            _plots :
-            _links : map of { meters: plots }
-        """
         # saving a copy of args for now
         self._args = {'meter': meter_args, 'plot': plot_args}
         self._env  = kwargs.get('env', None)
@@ -144,7 +155,7 @@ class FlexLogger:
 
     def add(self, kwargs={}):
         """
-        Add a dictitionary of values to meters.
+        Add a dictionary of values to meters.
 
         :param kwargs:
         :return:
@@ -158,16 +169,24 @@ class FlexLogger:
             elif type(v) in [list, tuple]:
                 self._meters.get(k).get('obj').add(*v)
 
-    def log(self, X=None, keys=None, reset=False, step=False):
+    def log(self, keys=None, reset=False, step=False):
         """
+        Retrieves current values of all meters, and plots at current timestep.
+        log is used to keep familiarity with torchnet interface.
 
-        :param X: X integer - X axis Value
-        :param keys: list of names of plots
+        if the reset keyword is set to True, calls self.reset()
+        if the step keyword is set to True, calls self.step()
+
+        :param keys: list of names of plots or None. If None, plots all keys.
         :param reset: reset meters after plotting
-        :return:
+        :param step: increment counter after plotting
+        :return: None
+
+        :Example:
+
         """
         plot_keys = self._prep_key_args(keys, self._plots)
-        X = self._ctr if X is None or self._step is True else X
+        X = self._ctr # if X is None or self._step is True else X
         for plot_ky in plot_keys:
             plot = self._plots.get(plot_ky, {}).get('obj', None)
             if plot is None:
@@ -185,7 +204,7 @@ class FlexLogger:
                 else:
                     YS.append(None)
                 if reset is True:
-                    meter.reset()
+                    meter.reset(keys)
             if YS:
                 XS = [X] * len(YS)
                 plot.log(XS, YS)
@@ -234,43 +253,25 @@ class FlexLogger:
             if meter is not None:
                 meter.reset()
 
-    def remove_configs(self, keys):
+    def remove_configs(self, *keys):
+        """
+
+        :param keys:
+        :return:
+        """
         for k in keys:
             self._meters.pop(k, None)
             self._plots.pop(k, None)
             self._plot_to_meter.pop(k, None)
             self._meter_to_plot.pop(k, None)
 
-    def get_plot_names(self):
+    def value(self, keys=None):
         """
 
+
+        :param keys:
         :return:
         """
-        return list(self._plot_to_meter.keys())
-
-    def get_plot_definitions(self):
-        """
-
-        :return:
-        """
-        return self._plot_to_meter
-
-    def get_meter_names(self):
-        """
-
-        :return:
-        """
-        return list(self._meter_to_plot.keys())
-
-    def get_meters_for_plot(self, plot_key):
-        """
-
-        :param plot_key:
-        :return:
-        """
-        return self._plot_to_meter.get(plot_key, [])
-
-    def value(self, keys=None, phases=None):
         keys = self._prep_key_args(keys, self._meters)
         mp = []
         for k in keys:
@@ -299,11 +300,26 @@ class FlexLogger:
 
     def add_metrics_for(self, *args, plot=None, phases=None):
         """
+        Adds some metrics to hte meter, with an optional target plot.
+        If the plot already exists, they will be added there.
 
-        :param args:
-        :param plot:
-        :param phases:
+        :param args: list of strings corresponding to metrics
+        :param plot: string - name of plot
+        :param phases: list of strings corresponding to phases
         :return:
+
+        Example:
+
+        .. code-block:: python
+
+            # create new flexlogger
+            TM = FlexLogger.from_presets('acc')
+
+            # ... do stuff
+
+            # latter on, need to add some stuff to a new plot
+            TM.add_metrics_for('loss', 'norm_loss', 'hinge_loss', 'demorgan_loss', plot='loss', phases=['test])
+
         """
         assert plot is not None
         from .presets import Config
@@ -312,18 +328,27 @@ class FlexLogger:
     @classmethod
     def from_presets(cls, *args, phases=None):
         """
-
+        Factory method to generate a logger from some preconfigured keys.
+        see presets.preconfigured.Config for details
         :param args:
         :param phases:
-        :return:
+        :return: instance of Flexilogger
+
+        :Example:
+
+        .. code-block:: python
+
+            TM = FlexLogger.from_presets('acc', 'loss')
+
         """
-        from .presets  import Config
+        from .presets import Config
         return cls(*Config.get_presets(*args, phases=phases))
 
     @property
     def vis(self):
         """
         property: Retrieve the Visdom() object for fun or profit
+
         :return: Visdom() object
         """
         return self._viz
@@ -337,13 +362,15 @@ class FlexLogger:
         :param meta: (boolean)
         :return: (string) detailed representation of self.
 
+        Example:
 
-        :Examples:
         .. code-block:: python
 
             # create Logger
             Stat = FlexLogger('loss', 'acc')
             Stat.show()
+
+        Output:
 
         .. code-block:: console
 
@@ -355,10 +382,11 @@ class FlexLogger:
                     test_acc     - AverageValueMeter : nan
                     train_acc    - AverageValueMeter : nan
                 Not plotted:
+
         """
         seen, st = set(), '\n'
 
-        def show_meter(st, m):
+        def _show_meter(st, m):
             mtr = self._meters.get(m, {}).get('obj')
             if mtr is None:
                 vl, cls = 0, 'na'
@@ -382,13 +410,16 @@ class FlexLogger:
             st += '\n'
             for m in meters:
                 seen.add(m)
-                st = show_meter(st, m)
+                st = _show_meter(st, m)
 
         st += ' ' * 2 + ' Not plotted:'
         for m in self._meters.keys():
             if m not in seen:
-                st = show_meter(st, m)
+                st = _show_meter(st, m)
         return st
+
+    def __len__(self):
+        return len(self._meter_to_plot)
 
     def __call__(self, *args, **kwargs):
         self.add(kwargs)
@@ -396,10 +427,34 @@ class FlexLogger:
     def __repr__(self):
         return self.show(meta=False)
 
-
-
-
-
+    # def get_plot_names(self):
+    #     """
+    #
+    #     :return:
+    #     """
+    #     return list(self._plot_to_meter.keys())
+    #
+    # def get_plot_definitions(self):
+    #     """
+    #
+    #     :return:
+    #     """
+    #     return self._plot_to_meter
+    #
+    # def get_meter_names(self):
+    #     """
+    #
+    #     :return:
+    #     """
+    #     return list(self._meter_to_plot.keys())
+    #
+    # def get_meters_for_plot(self, plot_key):
+    #     """
+    #
+    #     :param plot_key:
+    #     :return:
+    #     """
+    #     return self._plot_to_meter.get(plot_key, [])
 
 
 

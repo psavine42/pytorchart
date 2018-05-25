@@ -28,7 +28,9 @@
     <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pytorchart package" href="pytorchart.html" />
+    <link rel="prev" title="Welcome to pytorchart’s documentation!" href="../index.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -77,17 +79,17 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">pytorchart.Loggers package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-pytorchart.Loggers.style_utils">pytorchart.Loggers.style_utils module</a></li>
-<li><a class="reference internal" href="#module-pytorchart.Loggers.tracelogger">pytorchart.Loggers.tracelogger module</a></li>
-<li><a class="reference internal" href="#module-pytorchart.Loggers">Module contents</a></li>
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Loggers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-pytorchart.Loggers.tracelogger">pytorchart.Loggers.tracelogger</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="pytorchart.html">flexilogger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pytorchart.html">tooledmodel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pytorchart.moremeters.html">moremeters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pytorchart.presets.html">presets</a></li>
 </ul>
-</div>
+
             
           
         </div>
@@ -152,97 +154,41 @@
             
   <div class="section" id="pytorchart-loggers-package">
 <h1>pytorchart.Loggers package<a class="headerlink" href="#pytorchart-loggers-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-pytorchart.Loggers.style_utils">
-<span id="pytorchart-loggers-style-utils-module"></span><h2>pytorchart.Loggers.style_utils module<a class="headerlink" href="#module-pytorchart.Loggers.style_utils" title="Permalink to this headline">¶</a></h2>
-<p>Default Definitions and specifications for simple type checking for plot configs</p>
-<p>def_{} are defaults used to setup a minimal plot</p>
-<p>spec_{} are options that I am slowly pulling out of the plotly docs.
-this is somewhat an exersise in understanding plotly and documenting.
-on the other hand, it may be useful to have around.</p>
-<p>todo - should i generate these with a metaprogram? probably.</p>
-</div>
 <div class="section" id="module-pytorchart.Loggers.tracelogger">
-<span id="pytorchart-loggers-tracelogger-module"></span><h2>pytorchart.Loggers.tracelogger module<a class="headerlink" href="#module-pytorchart.Loggers.tracelogger" title="Permalink to this headline">¶</a></h2>
+<span id="pytorchart-loggers-tracelogger"></span><h2>pytorchart.Loggers.tracelogger<a class="headerlink" href="#module-pytorchart.Loggers.tracelogger" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pytorchart.Loggers.tracelogger.TraceLogger">
 <em class="property">class </em><code class="descclassname">pytorchart.Loggers.tracelogger.</code><code class="descname">TraceLogger</code><span class="sig-paren">(</span><em>*args</em>, <em>opts={}</em>, <em>vis=None</em>, <em>legend=[]</em>, <em>env=None</em>, <em>port=8097</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/Loggers/tracelogger.html#TraceLogger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.Loggers.tracelogger.TraceLogger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="classmethod">
-<dt id="pytorchart.Loggers.tracelogger.TraceLogger.check_trace">
-<em class="property">classmethod </em><code class="descname">check_trace</code><span class="sig-paren">(</span><em>opts, pre='', mp_spec={'connectgaps': [True, False], 'dash': ['dash', 'dot', 'dashdot'], 'line.color': &lt;class 'str'&gt;, 'line.dash': ['solid', 'dot', 'dash', 'longdash', 'dashdot', 'longdashdot'], 'line.shape': ['linear', 'spline', 'hv', 'vh', 'hvh', 'vhv'], 'line.simplify': [True, False], 'line.smoothing': &lt;class 'float'&gt;, 'line.width': &lt;class 'int'&gt;, 'marker.color': &lt;class 'str'&gt;, 'marker.line.color': &lt;class 'str'&gt;, 'marker.line.width': &lt;class 'float'&gt;, 'marker.size': &lt;class 'int'&gt;, 'marker.symbol': ['dot'], 'mode': ['lines', 'markers', 'lines+markers'], 'name': &lt;class 'str'&gt;, 'type': ['scatter']}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/Loggers/tracelogger.html#TraceLogger.check_trace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.Loggers.tracelogger.TraceLogger.check_trace" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>TraceLogger has the same idea as tnt.VisdomLogger, but with more access to
+plotly properties directly, with the downside of being less flexible. Also,
+it bypasses the visdom.scatter interface, and directly sends json data,
+so a few things which are rather difficult to do like specifing lines with
+a certain color and line style.</p>
+<p>Though this is not meant to be used directly, it can be by all means:</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>opts</strong> – </li>
-<li><strong>pre</strong> – </li>
-<li><strong>mp_spec</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
+<tr class="field-odd field"><th class="field-name">Examples:</th><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="pytorchart.Loggers.tracelogger.TraceLogger.init_lines">
-<em class="property">classmethod </em><code class="descname">init_lines</code><span class="sig-paren">(</span><em>titles</em>, <em>opts</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/Loggers/tracelogger.html#TraceLogger.init_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.Loggers.tracelogger.TraceLogger.init_lines" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>titles</strong> – </li>
-<li><strong>opts</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>otps usage :</dt>
-<dd><dl class="first last docutils">
-<dt>{‘line1’:{</dt>
-<dd><p class="first">‘name’: ‘1’,
-‘type’: ‘scatter’,</p>
-<blockquote class="last">
-<div><dl class="docutils">
-<dt>‘marker’: {‘size’: 10,</dt>
-<dd>‘symbol’: ‘dot’,
-‘line’: {‘width’: 0.5, ‘color’: ‘#000000’}},</dd>
-</dl>
-<p>‘mode’: ‘lines’}}</p>
-</div></blockquote>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="method">
 <dt id="pytorchart.Loggers.tracelogger.TraceLogger.log">
 <code class="descname">log</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/Loggers/tracelogger.html#TraceLogger.log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.Loggers.tracelogger.TraceLogger.log" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Same interface as torchnet.log(), applies metadata to the X,Y Values,
+and sends them to the visdom plot.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>X</strong> – </li>
-<li><strong>Y</strong> – </li>
+<li><strong>X</strong> – list of integers - X-axis values of size self.num_lines</li>
+<li><strong>Y</strong> – list of integers - X-axis values of size self.num_lines</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
 </td>
 </tr>
 </tbody>
@@ -252,18 +198,35 @@ on the other hand, it may be useful to have around.</p>
 <dl class="method">
 <dt id="pytorchart.Loggers.tracelogger.TraceLogger.save">
 <code class="descname">save</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/Loggers/tracelogger.html#TraceLogger.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.Loggers.tracelogger.TraceLogger.save" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>saves self, and saves the visdom enviornment.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – valid filepath</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="pytorchart.Loggers.tracelogger.TraceLogger.viz">
 <code class="descname">viz</code><a class="headerlink" href="#pytorchart.Loggers.tracelogger.TraceLogger.viz" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>retrieves the Visdom Object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">visom.Visdom Object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-pytorchart.Loggers">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pytorchart.Loggers" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -272,6 +235,15 @@ on the other hand, it may be useful to have around.</p>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="pytorchart.html" class="btn btn-neutral float-right" title="pytorchart package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral" title="Welcome to pytorchart’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
