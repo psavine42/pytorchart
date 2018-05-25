@@ -1,6 +1,5 @@
 """
 Module for the FlexLogger Class
-
 """
 import time, pickle, visdom
 from inspect import signature
@@ -29,8 +28,6 @@ class FlexLogger:
     """
     def __init__(self, plot_args, meter_args, **kwargs):
         """
-
-
 
         :param plot_args: dictionary of definitions for plotters
         :param meter_args: dictionary of definitions for meters
@@ -63,6 +60,7 @@ class FlexLogger:
     def update_config(self, plot_args, meter_args):
         """
         Api for adding meters and plots.
+
         :param plot_args:
         :param meter_args:
         :return:
@@ -332,31 +330,31 @@ class FlexLogger:
 
     def show(self, meta=False):
         """
-            Implementation for __repr__ with additional functionality.
-            __repr__ shows only meters, but show gives options to show metadata
-            for charts and meters.
+        Implementation for __repr__ with additional functionality.
+        __repr__ shows only meters, but show gives options to show metadata
+        for charts and meters.
 
-            :param meta: (boolean)
-            :return: (string) detailed representation of self.
+        :param meta: (boolean)
+        :return: (string) detailed representation of self.
 
-            :Examples:
-            .. code-block:: python
 
-                # create Logger
-                Stat = FlexLogger('loss', 'acc')
-                Stat.show()
+        :Examples:
+        .. code-block:: python
 
-            .. code-block:: console
+            # create Logger
+            Stat = FlexLogger('loss', 'acc')
+            Stat.show()
 
-                Plots:
-                    loss
-                        train_loss   - AverageValueMeter : nan
-                        test_loss    - AverageValueMeter : nan
-                     acc
-                        test_acc     - AverageValueMeter : nan
-                        train_acc    - AverageValueMeter : nan
-                    Not plotted:
+        .. code-block:: console
 
+            Plots:
+                loss
+                    train_loss   - AverageValueMeter : nan
+                    test_loss    - AverageValueMeter : nan
+                acc
+                    test_acc     - AverageValueMeter : nan
+                    train_acc    - AverageValueMeter : nan
+                Not plotted:
         """
         seen, st = set(), '\n'
 

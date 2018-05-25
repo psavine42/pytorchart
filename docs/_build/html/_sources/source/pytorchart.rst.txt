@@ -10,8 +10,6 @@ Subpackages
     pytorchart.moremeters
     pytorchart.presets
 
-Submodules
-----------
 
 pytorchart.flexilogger module
 -----------------------------
@@ -33,22 +31,6 @@ pytorchart.tooledmodel module
 -----------------------------
 
 .. automodule:: pytorchart.tooledmodel
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pytorchart.utils module
------------------------
-
-.. automodule:: pytorchart.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pytorchart.visdomtools module
------------------------------
-
-.. automodule:: pytorchart.visdomtools
     :members:
     :undoc-members:
     :show-inheritance:

@@ -81,12 +81,9 @@
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">pytorchart package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-pytorchart.flexilogger">pytorchart.flexilogger module</a></li>
 <li><a class="reference internal" href="#module-pytorchart.meter_doc">pytorchart.meter_doc module</a></li>
 <li><a class="reference internal" href="#module-pytorchart.tooledmodel">pytorchart.tooledmodel module</a></li>
-<li><a class="reference internal" href="#module-pytorchart.utils">pytorchart.utils module</a></li>
-<li><a class="reference internal" href="#module-pytorchart.visdomtools">pytorchart.visdomtools module</a></li>
 <li><a class="reference internal" href="#module-pytorchart">Module contents</a></li>
 </ul>
 </li>
@@ -183,9 +180,6 @@
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-pytorchart.flexilogger">
 <span id="pytorchart-flexilogger-module"></span><h2>pytorchart.flexilogger module<a class="headerlink" href="#module-pytorchart.flexilogger" title="Permalink to this headline">¶</a></h2>
@@ -406,7 +400,7 @@ for charts and meters.</p>
 <span class="go">    loss</span>
 <span class="go">        train_loss   - AverageValueMeter : nan</span>
 <span class="go">        test_loss    - AverageValueMeter : nan</span>
-<span class="go">     acc</span>
+<span class="go">    acc</span>
 <span class="go">        test_acc     - AverageValueMeter : nan</span>
 <span class="go">        train_acc    - AverageValueMeter : nan</span>
 <span class="go">    Not plotted:</span>
@@ -433,10 +427,22 @@ for charts and meters.</p>
 <dl class="method">
 <dt id="pytorchart.flexilogger.FlexLogger.update_config">
 <code class="descname">update_config</code><span class="sig-paren">(</span><em>plot_args</em>, <em>meter_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.update_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger.update_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Api for adding meters and plots.
-:param plot_args:
-:param meter_args:
-:return:</p>
+<dd><p>Api for adding meters and plots.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>plot_args</strong> – </li>
+<li><strong>meter_args</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -516,56 +522,6 @@ TM = TooledModel(model, spec=my_spec)</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-pytorchart.utils">
-<span id="pytorchart-utils-module"></span><h2>pytorchart.utils module<a class="headerlink" href="#module-pytorchart.utils" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="pytorchart.utils.deep_merge">
-<code class="descclassname">pytorchart.utils.</code><code class="descname">deep_merge</code><span class="sig-paren">(</span><em>*dicts</em>, <em>update=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/utils.html#deep_merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.utils.deep_merge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Merges dicts deeply.</p>
-<p>Shamelesly lifted from  <a class="reference external" href="https://gist.github.com/yatsu/68660bea18edfe7e023656c250661086">https://gist.github.com/yatsu/68660bea18edfe7e023656c250661086</a></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>dicts</strong> – list[dict] List of dicts.</li>
-<li><strong>update</strong> – bool Whether to update the first dict or create a new dict.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Merged dict.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pytorchart.utils.get_in">
-<code class="descclassname">pytorchart.utils.</code><code class="descname">get_in</code><span class="sig-paren">(</span><em>o</em>, <em>kys</em>, <em>d=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/utils.html#get_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.utils.get_in" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>o</strong> – </li>
-<li><strong>kys</strong> – </li>
-<li><strong>d</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pytorchart.visdomtools">
-<span id="pytorchart-visdomtools-module"></span><h2>pytorchart.visdomtools module<a class="headerlink" href="#module-pytorchart.visdomtools" title="Permalink to this headline">¶</a></h2>
-<p>If we serialize a visdom env, there is theoretically a way to parse it.</p>
 </div>
 <div class="section" id="module-pytorchart">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pytorchart" title="Permalink to this headline">¶</a></h2>

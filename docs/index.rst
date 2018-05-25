@@ -7,12 +7,11 @@ Welcome to pytorchart's documentation!
 ======================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
 
-   readme
-   changelog
-   pytorchart
+   Loggers <source/pytorchart.Loggers.rst>
+   flexilogger <source/pytorchart.rst>
+   tooledmodel <source/pytorchart.rst>
 
 
 Indices and tables
