@@ -20,6 +20,7 @@ setup_info = dict(
     license='BSD',
 
     # Package info
+    # dependency_links=['http://github.com/user/repo/tarball/master#egg=package-1.0'],
     packages=find_packages(exclude=('test', 'imgs')),
     zip_safe=True,
     install_requires=[

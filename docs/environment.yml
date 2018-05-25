@@ -4,7 +4,6 @@ dependencies:
   - python==3.5
   - pytorch>=0.1.12
   - torchvision
-  - torchnet
   - pip:
      - scipy>=0.13.0
      - h5py
@@ -14,3 +13,4 @@ dependencies:
      - sphinx-gallery
      - sphinxcontrib-napoleon
      - sphinxcontrib-bibtex
+     - git+https://github.com/pytorch/tnt.git@master
