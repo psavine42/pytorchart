@@ -1,5 +1,5 @@
 import torch
-from pytorchart.modelutils.modellogger import FlexLogger
+from . import FlexLogger
 from torch.autograd import Variable
 
 

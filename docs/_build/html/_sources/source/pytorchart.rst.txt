@@ -8,17 +8,13 @@ pytorchart package
     pytorchart.presets
 
 
-pytorchart.flexilogger module
+FlexLogger module
 -----------------------------
-
-.. automodule:: pytorchart.flexilogger
-    :members:
-    :undoc-members:
-
 
 .. autoclass:: pytorchart.flexilogger.FlexLogger
     :members:
     :undoc-members:
+
 
 pytorchart.tooledmodel module
 -----------------------------

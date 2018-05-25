@@ -81,6 +81,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/pytorchart.html">pytorchart package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/pytorchart.Loggers.html">pytorchart.Loggers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/modules.html">pytorchart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/pytorchart.html">flexilogger</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/pytorchart.html">tooledmodel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/pytorchart.moremeters.html">moremeters</a></li>
@@ -153,7 +154,7 @@
 <span class="c1"># from .tooledmodel import TooledModel</span>
 
 
-<div class="viewcode-block" id="TooledModelLogger"><a class="viewcode-back" href="../../../source/pytorchart.modelutils.html#pytorchart.modelutils.modellogger.TooledModelLogger">[docs]</a><span class="k">class</span> <span class="nc">TooledModelLogger</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="TooledModelLogger"><a class="viewcode-back" href="../../../source/modules.html#pytorchart.modelutils.modellogger.TooledModelLogger">[docs]</a><span class="k">class</span> <span class="nc">TooledModelLogger</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Combines a flexlogger and a TooledModel.</span>
@@ -237,7 +238,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tm_to_logger</span><span class="p">[</span><span class="n">meter_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">metric_type</span><span class="p">,</span> <span class="n">metric</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_Logger</span> <span class="o">=</span> <span class="n">FlexLogger</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">meters</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TooledModelLogger.generete_custom_plot"><a class="viewcode-back" href="../../../source/pytorchart.modelutils.html#pytorchart.modelutils.modellogger.TooledModelLogger.generete_custom_plot">[docs]</a>    <span class="k">def</span> <span class="nf">generete_custom_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_dict</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">meters</span><span class="p">):</span>
+<div class="viewcode-block" id="TooledModelLogger.generete_custom_plot"><a class="viewcode-back" href="../../../source/modules.html#pytorchart.modelutils.modellogger.TooledModelLogger.generete_custom_plot">[docs]</a>    <span class="k">def</span> <span class="nf">generete_custom_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_dict</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">meters</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param data_dict:</span>
@@ -247,7 +248,7 @@
 <span class="sd">        &quot;&quot;&quot;</span></div>
         <span class="bp">self</span><span class="o">.</span><span class="n">_Logger</span> <span class="o">=</span> <span class="n">FlexLogger</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">meters</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TooledModelLogger.step"><a class="viewcode-back" href="../../../source/pytorchart.modelutils.html#pytorchart.modelutils.modellogger.TooledModelLogger.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="TooledModelLogger.step"><a class="viewcode-back" href="../../../source/modules.html#pytorchart.modelutils.modellogger.TooledModelLogger.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param X:</span>
@@ -270,25 +271,25 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_Logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="n">reset</span><span class="p">)</span>
 
     <span class="c1"># Passthrough APIs - should I just subclass?</span>
-<div class="viewcode-block" id="TooledModelLogger.add"><a class="viewcode-back" href="../../../source/pytorchart.modelutils.html#pytorchart.modelutils.modellogger.TooledModelLogger.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update_dict</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TooledModelLogger.add"><a class="viewcode-back" href="../../../source/modules.html#pytorchart.modelutils.modellogger.TooledModelLogger.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update_dict</span><span class="p">):</span></div>
         <span class="bp">self</span><span class="o">.</span><span class="n">_Logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">update_dict</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TooledModelLogger.log"><a class="viewcode-back" href="../../../source/pytorchart.modelutils.html#pytorchart.modelutils.modellogger.TooledModelLogger.log">[docs]</a>    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TooledModelLogger.log"><a class="viewcode-back" href="../../../source/modules.html#pytorchart.modelutils.modellogger.TooledModelLogger.log">[docs]</a>    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></div>
         <span class="bp">self</span><span class="o">.</span><span class="n">_Logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TooledModelLogger.reset"><a class="viewcode-back" href="../../../source/pytorchart.modelutils.html#pytorchart.modelutils.modellogger.TooledModelLogger.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TooledModelLogger.reset"><a class="viewcode-back" href="../../../source/modules.html#pytorchart.modelutils.modellogger.TooledModelLogger.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
         <span class="bp">self</span><span class="o">.</span><span class="n">_Logger</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
-<div class="viewcode-block" id="TooledModelLogger.clear"><a class="viewcode-back" href="../../../source/pytorchart.modelutils.html#pytorchart.modelutils.modellogger.TooledModelLogger.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TooledModelLogger.clear"><a class="viewcode-back" href="../../../source/modules.html#pytorchart.modelutils.modellogger.TooledModelLogger.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
         <span class="bp">self</span><span class="o">.</span><span class="n">_TM</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
-<div class="viewcode-block" id="TooledModelLogger.table"><a class="viewcode-back" href="../../../source/pytorchart.modelutils.html#pytorchart.modelutils.modellogger.TooledModelLogger.table">[docs]</a>    <span class="k">def</span> <span class="nf">table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TooledModelLogger.table"><a class="viewcode-back" href="../../../source/modules.html#pytorchart.modelutils.modellogger.TooledModelLogger.table">[docs]</a>    <span class="k">def</span> <span class="nf">table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
         <span class="bp">self</span><span class="o">.</span><span class="n">_TM</span><span class="o">.</span><span class="n">table</span><span class="p">()</span>
 
-<div class="viewcode-block" id="TooledModelLogger.get_handles"><a class="viewcode-back" href="../../../source/pytorchart.modelutils.html#pytorchart.modelutils.modellogger.TooledModelLogger.get_handles">[docs]</a>    <span class="k">def</span> <span class="nf">get_handles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TooledModelLogger.get_handles"><a class="viewcode-back" href="../../../source/modules.html#pytorchart.modelutils.modellogger.TooledModelLogger.get_handles">[docs]</a>    <span class="k">def</span> <span class="nf">get_handles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_TM</span><span class="o">.</span><span class="n">get_handles</span><span class="p">()</span>
 
-<div class="viewcode-block" id="TooledModelLogger.get_dict"><a class="viewcode-back" href="../../../source/pytorchart.modelutils.html#pytorchart.modelutils.modellogger.TooledModelLogger.get_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div></div>
+<div class="viewcode-block" id="TooledModelLogger.get_dict"><a class="viewcode-back" href="../../../source/modules.html#pytorchart.modelutils.modellogger.TooledModelLogger.get_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div></div>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_TM</span><span class="o">.</span><span class="n">get_dict</span><span class="p">()</span>
 
 

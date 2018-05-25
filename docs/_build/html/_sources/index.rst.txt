@@ -12,6 +12,7 @@ Welcome to pytorchart's documentation!
 
    source/pytorchart
    source/pytorchart.Loggers
+   source/modules
    flexilogger <source/pytorchart.rst>
    tooledmodel <source/pytorchart.rst>
    moremeters <source/pytorchart.moremeters.rst>

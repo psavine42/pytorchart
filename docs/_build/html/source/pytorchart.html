@@ -29,8 +29,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pytorchart.moremeters package" href="pytorchart.moremeters.html" />
-    <link rel="prev" title="pytorchart.Loggers package" href="pytorchart.Loggers.html" /> 
+    <link rel="next" title="pytorchart.Loggers package" href="pytorchart.Loggers.html" />
+    <link rel="prev" title="Welcome to pytorchart’s documentation!" href="../index.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -79,14 +79,23 @@
               
             
             
-              <p class="caption"><span class="caption-text">Package Reference</span></p>
+              <p class="caption"><span class="caption-text">Reference</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="pytorchart.Loggers.html">Loggers</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">pytorchart package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pytorchart.Loggers.html">pytorchart.Loggers package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorchart.moremeters.html">pytorchart.moremeters package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pytorchart.presets.html">pytorchart.presets package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#flexlogger-module">FlexLogger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pytorchart.tooledmodel">pytorchart.tooledmodel module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pytorchart.Loggers.html">pytorchart.Loggers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">pytorchart</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">flexilogger</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pytorchart.Loggers.html">pytorchart.Loggers package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pytorchart.moremeters.html">pytorchart.moremeters package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pytorchart.presets.html">pytorchart.presets package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pytorchart.flexilogger">pytorchart.flexilogger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#flexlogger-module">FlexLogger module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pytorchart.tooledmodel">pytorchart.tooledmodel module</a></li>
 </ul>
 </li>
@@ -94,7 +103,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pytorchart.Loggers.html">pytorchart.Loggers package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pytorchart.moremeters.html">pytorchart.moremeters package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pytorchart.presets.html">pytorchart.presets package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pytorchart.flexilogger">pytorchart.flexilogger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#flexlogger-module">FlexLogger module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pytorchart.tooledmodel">pytorchart.tooledmodel module</a></li>
 </ul>
 </li>
@@ -187,9 +196,8 @@
 </li>
 </ul>
 </div>
-<div class="section" id="module-pytorchart.flexilogger">
-<span id="pytorchart-flexilogger-module"></span><h2>pytorchart.flexilogger module<a class="headerlink" href="#module-pytorchart.flexilogger" title="Permalink to this headline">¶</a></h2>
-<p>Module for the FlexLogger Class</p>
+<div class="section" id="flexlogger-module">
+<h2>FlexLogger module<a class="headerlink" href="#flexlogger-module" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pytorchart.flexilogger.FlexLogger">
 <em class="property">class </em><code class="descclassname">pytorchart.flexilogger.</code><code class="descname">FlexLogger</code><span class="sig-paren">(</span><em>plot_args</em>, <em>meter_args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pytorchart.flexilogger.FlexLogger" title="Permalink to this definition">¶</a></dt>
@@ -476,292 +484,6 @@ for charts and meters.</p>
 
 </dd></dl>
 
-<dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">pytorchart.flexilogger.</code><code class="descname">FlexLogger</code><span class="sig-paren">(</span><em>plot_args</em>, <em>meter_args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Base object for logging. It takes some specifications for meters
-and for plots, indexes them, and adds a hook to send data to plots on log.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>plot_args</strong> – dictionary of definitions for plotters or None.</li>
-<li><strong>meter_args</strong> – dictionary of definitions for meters</li>
-<li><strong>kwargs</strong> – additional keyword arguments</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>Examples:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">meters</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;mymetric&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;AverageValueMeter&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;misc&#39;</span><span class="p">}</span>
-    <span class="s1">&#39;test_loss&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;AverageValueMeter&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;loss&#39;</span><span class="p">}</span>
-    <span class="s1">&#39;train_loss&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;AverageValueMeter&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;loss&#39;</span><span class="p">}</span> <span class="c1"># target is the plot key</span>
-<span class="p">}</span>
-<span class="n">plots</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;line&#39;</span><span class="p">},</span> <span class="s1">&#39;misc&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;line&#39;</span><span class="p">}}</span>
-
-<span class="n">TM</span> <span class="o">=</span> <span class="n">FlexLogger</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">meters</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="s1">&#39;bob&#39;</span><span class="p">)</span> <span class="c1"># initializes plots with meters to visdom env &#39;bob&#39;</span>
-
-<span class="c1"># sample expirement step - for more see unittests</span>
-<span class="n">TM</span><span class="p">(</span><span class="n">mymetric</span><span class="o">=</span><span class="mi">69</span><span class="p">,</span> <span class="n">test_loss</span><span class="o">=</span><span class="mf">0.94</span><span class="p">)</span>
-<span class="n">TM</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-
-<span class="n">TM</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">reset</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c1"># log and reset</span>
-</pre></div>
-</div>
-<dl class="method">
-<dt>
-<code class="descname">add</code><span class="sig-paren">(</span><em>kwargs={}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.add"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Add a dictionary of values to meters.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="descname">add_metrics_for</code><span class="sig-paren">(</span><em>*args</em>, <em>plot=None</em>, <em>phases=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.add_metrics_for"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Adds some metrics to hte meter, with an optional target plot.
-If the plot already exists, they will be added there.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>args</strong> – list of strings corresponding to metrics</li>
-<li><strong>plot</strong> – string - name of plot</li>
-<li><strong>phases</strong> – list of strings corresponding to phases</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-<p>Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create new flexlogger</span>
-<span class="n">TM</span> <span class="o">=</span> <span class="n">FlexLogger</span><span class="o">.</span><span class="n">from_presets</span><span class="p">(</span><span class="s1">&#39;acc&#39;</span><span class="p">)</span>
-
-<span class="c1"># ... do stuff</span>
-
-<span class="c1"># latter on, need to add some stuff to a new plot</span>
-<span class="n">TM</span><span class="o">.</span><span class="n">add_metrics_for</span><span class="p">(</span><span class="s1">&#39;loss&#39;</span><span class="p">,</span> <span class="s1">&#39;norm_loss&#39;</span><span class="p">,</span> <span class="s1">&#39;hinge_loss&#39;</span><span class="p">,</span> <span class="s1">&#39;demorgan_loss&#39;</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="s1">&#39;loss&#39;</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;test])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="descname">add_presets</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.add_presets"><span class="viewcode-link">[source]</span></a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="classmethod">
-<dt>
-<em class="property">classmethod </em><code class="descname">from_presets</code><span class="sig-paren">(</span><em>*args</em>, <em>phases=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.from_presets"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Factory method to generate a logger from some preconfigured keys.
-see presets.preconfigured.Config for details</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>args</strong> – </li>
-<li><strong>phases</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">instance of Flexilogger</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">TM</span> <span class="o">=</span> <span class="n">FlexLogger</span><span class="o">.</span><span class="n">from_presets</span><span class="p">(</span><span class="s1">&#39;acc&#39;</span><span class="p">,</span> <span class="s1">&#39;loss&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt>
-<em class="property">static </em><code class="descname">load</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.load"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt>
-<code class="descname">log</code><span class="sig-paren">(</span><em>keys=None</em>, <em>reset=False</em>, <em>step=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.log"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Retrieves current values of all meters, and plots at current timestep.
-log is used to keep familiarity with torchnet interface.</p>
-<p>if the reset keyword is set to True, calls self.reset()
-if the step keyword is set to True, calls self.step()</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>keys</strong> – list of names of plots or None. If None, plots all keys.</li>
-<li><strong>reset</strong> – reset meters after plotting</li>
-<li><strong>step</strong> – increment counter after plotting</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">None</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="descname">reset</code><span class="sig-paren">(</span><em>keys=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.reset"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Resets all of own meters. If keys kwd is specified,
-only resets the meters with those key names.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>keys</strong> – list[str] list of keys which will be reset.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="descname">save</code><span class="sig-paren">(</span><em>file_path</em>, <em>plots=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.save"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>saves this object, and the visdom state if plots is True
-todo implement lol
-:return: None</p>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="descname">show</code><span class="sig-paren">(</span><em>meta=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.show"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Implementation for __repr__ with additional functionality.
-__repr__ shows only meters, but show gives options to show metadata
-for charts and meters.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>meta</strong> – (boolean)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(string) detailed representation of self.</td>
-</tr>
-</tbody>
-</table>
-<p>Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create Logger</span>
-<span class="n">Stat</span> <span class="o">=</span> <span class="n">FlexLogger</span><span class="p">(</span><span class="s1">&#39;loss&#39;</span><span class="p">,</span> <span class="s1">&#39;acc&#39;</span><span class="p">)</span>
-<span class="n">Stat</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>Output:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Plots:</span>
-<span class="go">    loss</span>
-<span class="go">        train_loss   - AverageValueMeter : nan</span>
-<span class="go">        test_loss    - AverageValueMeter : nan</span>
-<span class="go">    acc</span>
-<span class="go">        test_acc     - AverageValueMeter : nan</span>
-<span class="go">        train_acc    - AverageValueMeter : nan</span>
-<span class="go">    Not plotted:</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="descname">step</code><span class="sig-paren">(</span><em>step=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.step"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Increments the internal counter, or sets to value of :step arg</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>step</strong> – (int) if step is specified, sets the internal counter to that step</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(int) updated step count</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="descname">update_config</code><span class="sig-paren">(</span><em>plot_args</em>, <em>meter_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.update_config"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Api for adding meters and plots.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>plot_args</strong> – </li>
-<li><strong>meter_args</strong> – </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="descname">value</code><span class="sig-paren">(</span><em>keys=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pytorchart/flexilogger.html#FlexLogger.value"><span class="viewcode-link">[source]</span></a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>keys</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">vis</code></dt>
-<dd><p>property: Retrieve the Visdom() object for fun or profit</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Visdom() object</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 <div class="section" id="module-pytorchart.tooledmodel">
 <span id="pytorchart-tooledmodel-module"></span><h2>pytorchart.tooledmodel module<a class="headerlink" href="#module-pytorchart.tooledmodel" title="Permalink to this headline">¶</a></h2>
@@ -832,10 +554,10 @@ TM = TooledModel(model, spec=my_spec)</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="pytorchart.moremeters.html" class="btn btn-neutral float-right" title="pytorchart.moremeters package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="pytorchart.Loggers.html" class="btn btn-neutral float-right" title="pytorchart.Loggers package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="pytorchart.Loggers.html" class="btn btn-neutral" title="pytorchart.Loggers package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../index.html" class="btn btn-neutral" title="Welcome to pytorchart’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
