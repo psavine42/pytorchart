@@ -51,7 +51,7 @@ optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
 # Options for setting up logger
 
 # select logging specifications
-meters, plots = Fn.generate_layers(model, targets=['snr']) # 'grad_norms',
+meters, plots = Fn.generate_layers(model, targets=['snr'])  # 'grad_norms',
 Stat = FlexTooledModel(plots, meters, model)  # Initialize the logger
 
 # add another set of stats

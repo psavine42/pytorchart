@@ -226,8 +226,6 @@ def generate_layers(model, colors=None, fn=None, targets=[]):
         plots[tgt] = _def_plot.copy()
         d, colors = _generate_layer(model, colors=colors, fn=fn, target=tgt)
         meters += d
-    pprint.pprint(meters)
-    pprint.pprint(plots)
     return meters, plots
 
 
