@@ -9,9 +9,11 @@ Or maybe it would be good to just have some common debugging things, and have a 
 readily available.
 Anyway, the meters and loggers are contained in a single object, which is updated by dictionaries of values. 
 
+![alt text](imgs/s3.png?raw=true "Sample configuration - see mnist") 
+
   -[Documentation](https://pytorchart.readthedocs.io/)
   
-  -[Mnist Example](https://github.com/psavine42/pytorchart/blob/master/example/mnistmodel.py)
+  -[Mnist Example](https://github.com/psavine42/pytorchart/blob/master/example/mnist.py)
   
 ## Examples
 
@@ -146,17 +148,6 @@ If you are not a fan of dictionaries for your data during expirements, this may 
 I tend to like not redoing my logging creation functions for every expriment, so I decided to consolidate these.
 If you like tnt's MeterLogger, but also like logging random things like histograms of your weights, this may be for you.
 
-
-### Misc Notes
-There are also some utilities that I wrote down one time to remind myself what the plot and meter types are and the shapes of the inputs they take.
-
-    
-    Stat.meter_types()    # list all the meters
-    Stat.plot_types()     # list all plot types
-    Stat.plot_types()     # show docs for a meter type
-    
-    Stat.preset_names()           # list all the preset names 
-    Stat.preset_info('loss+Acc')  # show details for a preset config
     
 
 ### Install 

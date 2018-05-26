@@ -204,7 +204,7 @@ class FlexLogger:
                 else:
                     YS.append(None)
                 if reset is True:
-                    meter.reset(keys)
+                    meter.reset()
             if YS:
                 XS = [X] * len(YS)
                 plot.log(XS, YS)

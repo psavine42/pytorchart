@@ -85,7 +85,7 @@ def _grad_wrt_weight(module, grad_in):
                 return g.data
 
 
-def grad_mean_snr(module, grad_in, grad_out):
+def grad_norm_mean(module, grad_in, grad_out):
     m = module._parameters['weight'].data.max()
     g_wrt_w_data = _grad_wrt_weight(module, grad_in)
     n = g_wrt_w_data / m
@@ -109,7 +109,7 @@ def gen_module_wght(fn):
 
 
 def grad_mean(module, grad_in, grad_out):
-    return _grad_wrt_weight(module, grad_in).mean()
+    return _grad_wrt_weight(module, grad_in).abs().mean()
 
 
 def grad_norm(module, grad_in, grad_out):
@@ -144,7 +144,7 @@ fspecs = \
           'layer': _grad_layers,
           'data': 'backward',
           'name': 'std_meter',
-          'func': [grad_std, grad_mean_snr],
+          'func': [grad_norm, grad_std],
           'same': {'layer': 'line.color', 'func': 'line.dash'}}
      }
 
