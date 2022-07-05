@@ -17,7 +17,7 @@ torchtext==0.2.1
 torchvision==0.2.0
 tornado==4.5.3
 tox==3.0.0
-ujson==1.35
+ujson==5.4.0
 unicodecsv==0.14.1
 urllib3==1.22
 virtualenv==16.0.0
